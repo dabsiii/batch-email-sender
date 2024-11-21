@@ -136,13 +136,13 @@ class FileSelectorWindow(QMainWindow):
 
         # File Browser Widgets for different file types
         self.credentials_widget = FileBrowserWidget(
-            "Import Sender Credentials File (.json):", "Browse", "json", self
+            "Import Sender Credentials File (.json):", "Select a file", "json", self
         )
         self.excel_widget = FileBrowserWidget(
-            "Select the Data File (.xlsx):", "Browse", "xlsx", self
+            "Select the Data File (.xlsx):", "Select a file", "xlsx", self
         )
         self.folder_widget = FileBrowserWidget(
-            "Select Folder Containing Attachments:", "Browse", "folder", self
+            "Select Folder Containing Attachments:", "Select a file", "folder", self
         )
 
         # Adding widgets with appropriate grid positioning
