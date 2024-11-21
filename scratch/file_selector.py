@@ -35,20 +35,19 @@ class FileBrowserWidget(QWidget):
         self.label = QLabel(self.label_text)
         self.layout.addWidget(self.label)
 
-        # Frame to create an outline around the file browser
-        self.frame = QFrame(self)
-        self.frame.setFrameShape(QFrame.StyledPanel)
-        self.frame.setFrameShadow(QFrame.Raised)
-
         # Inner HLayout to hold icon, file name, and file path
         self.info_layout = QHBoxLayout()
-
+        # Browse Button
+        self.button = QPushButton(self.button_text)
+        self.button.setIcon(QIcon.fromTheme("document-open"))
+        self.button.clicked.connect(self.browse_file)
+        self.layout.addWidget(self.button)
         # File Icon
         self.icon_label = QLabel(self)
         self.info_layout.addWidget(self.icon_label)
 
         # File Name
-        self.file_name_label = QLabel("")
+        self.file_name_label = QLabel("No file selected")
         self.info_layout.addWidget(self.file_name_label)
 
         # Full Path display
@@ -56,18 +55,21 @@ class FileBrowserWidget(QWidget):
         self.layout.addLayout(self.info_layout)
         self.layout.addWidget(self.path_label)
 
-        # Browse Button
-        self.button = QPushButton(self.button_text)
-        self.button.setIcon(QIcon.fromTheme("document-open"))
-        self.button.clicked.connect(self.browse_file)
-        self.layout.addWidget(self.button)
-
-        self.frame.setLayout(self.layout)
-
-        self.setLayout(self.layout)  # Fix: setLayout properly, not layout()
+        # Set the layout for the main widget
+        self.setLayout(self.layout)
 
         # Store file path
         self.file_path = None
+
+        # Apply an outline around the entire widget for clear separation
+        self.setStyleSheet(
+            """
+            outline: 3px solid #4CAF50; 
+            outline-offset: 5px;
+            padding: 10px;
+            margin-bottom: 20px;  # To create space between the browsers
+        """
+        )
 
     def browse_file(self):
         file_path = None
@@ -126,7 +128,7 @@ class FileSelectorWindow(QMainWindow):
     def __init__(self):
         super().__init__()
         self.setWindowTitle("Email Sender - File Selector")
-        self.setGeometry(100, 100, 600, 300)
+        self.setGeometry(100, 100, 600, 400)
         self.setStyleSheet("background-color: #f0f0f0;")
 
         # Layout setup
@@ -143,6 +145,7 @@ class FileSelectorWindow(QMainWindow):
             "Select Folder Containing Attachments:", "Browse", "folder", self
         )
 
+        # Adding widgets with appropriate grid positioning
         grid_layout.addWidget(self.credentials_widget, 0, 0)
         grid_layout.addWidget(self.excel_widget, 1, 0)
         grid_layout.addWidget(self.folder_widget, 2, 0)
@@ -150,7 +153,7 @@ class FileSelectorWindow(QMainWindow):
         # Proceed button
         self.proceed_button = QPushButton("Proceed", self)
         self.proceed_button.setStyleSheet(
-            "background-color: #4CAF50; color: white; font-weight: bold;"
+            "background-color: #4CAF50; color: white; font-weight: bold; padding: 10px;"
         )
         self.proceed_button.clicked.connect(self.proceed)
         grid_layout.addWidget(self.proceed_button, 3, 0)
@@ -159,7 +162,7 @@ class FileSelectorWindow(QMainWindow):
         self.status_bar = QStatusBar(self)
         self.setStatusBar(self.status_bar)
 
-        # Set the layout
+        # Set the layout for the central widget
         container = QWidget()
         container.setLayout(grid_layout)
         self.setCentralWidget(container)
