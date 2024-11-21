@@ -27,21 +27,33 @@ class FileBrowserWidget(QWidget):
         self.file_type = file_type
 
         # Layout for the File Browser Widget
-        self.layout = QHBoxLayout()
+        self.layout = QVBoxLayout()
 
-        # Label
+        # Label for description
         self.label = QLabel(self.label_text)
         self.layout.addWidget(self.label)
+
+        # HLayout to hold icon, file name, and file path
+        self.info_layout = QHBoxLayout()
+
+        # File Icon
+        self.icon_label = QLabel(self)
+        self.info_layout.addWidget(self.icon_label)
+
+        # File Name
+        self.file_name_label = QLabel("")
+        self.info_layout.addWidget(self.file_name_label)
+
+        # Full Path display
+        self.path_label = QLabel("")
+        self.layout.addLayout(self.info_layout)
+        self.layout.addWidget(self.path_label)
 
         # Browse Button
         self.button = QPushButton(self.button_text)
         self.button.setIcon(QIcon.fromTheme("document-open"))
         self.button.clicked.connect(self.browse_file)
         self.layout.addWidget(self.button)
-
-        # Path display label
-        self.path_label = QLabel("")
-        self.layout.addWidget(self.path_label)
 
         self.setLayout(self.layout)
 
@@ -68,19 +80,21 @@ class FileBrowserWidget(QWidget):
             self.update_display()
 
     def update_display(self):
-        """Update the display with the selected file path and icon."""
-        # Show the file path in the label
-        self.path_label.setText(f"Path: {self.file_path}")
+        """Update the display with the selected file path, icon, and file name."""
+        # Extract the file name from the full path
+        file_name = os.path.basename(self.file_path)
+
+        # Set the file name in the label
+        self.file_name_label.setText(file_name)
+
+        # Show the full path in the label
+        self.path_label.setText(f"Full Path: {self.file_path}")
 
         # Set the appropriate icon based on file type
         icon = self.get_file_icon(self.file_type)
         pixmap = icon.pixmap(30, 30)  # Convert to QPixmap and scale it
-        icon_label = QLabel(self)
-        icon_label.setPixmap(pixmap)
-        icon_label.setAlignment(Qt.AlignLeft)
-
-        # Update the layout
-        self.layout.insertWidget(0, icon_label)
+        self.icon_label.setPixmap(pixmap)
+        self.icon_label.setAlignment(Qt.AlignLeft)
 
     def get_file_icon(self, file_type):
         """Return the appropriate icon based on the file type"""
