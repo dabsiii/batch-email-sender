@@ -1,11 +1,13 @@
 import os
 import sys
+from pathlib import Path
 
 from PyQt5.QtCore import Qt
-from PyQt5.QtGui import QIcon
+from PyQt5.QtGui import QIcon, QPixmap
 from PyQt5.QtWidgets import (
     QApplication,
     QFileDialog,
+    QFrame,
     QGridLayout,
     QHBoxLayout,
     QLabel,
@@ -33,7 +35,12 @@ class FileBrowserWidget(QWidget):
         self.label = QLabel(self.label_text)
         self.layout.addWidget(self.label)
 
-        # HLayout to hold icon, file name, and file path
+        # Frame to create an outline around the file browser
+        self.frame = QFrame(self)
+        self.frame.setFrameShape(QFrame.StyledPanel)
+        self.frame.setFrameShadow(QFrame.Raised)
+
+        # Inner HLayout to hold icon, file name, and file path
         self.info_layout = QHBoxLayout()
 
         # File Icon
@@ -55,7 +62,9 @@ class FileBrowserWidget(QWidget):
         self.button.clicked.connect(self.browse_file)
         self.layout.addWidget(self.button)
 
-        self.setLayout(self.layout)
+        self.frame.setLayout(self.layout)
+
+        self.setLayout(self.layout)  # Fix: setLayout properly, not layout()
 
         # Store file path
         self.file_path = None
@@ -99,14 +108,18 @@ class FileBrowserWidget(QWidget):
     def get_file_icon(self, file_type):
         """Return the appropriate icon based on the file type"""
         if file_type == "json":
-            return QIcon.fromTheme("application-json")
+            return QIcon(
+                str(Path("assets\\json-icon.png").resolve())
+            )  # Custom JSON icon (use local image)
         elif file_type == "xlsx":
-            return QIcon.fromTheme(
-                "application-vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-            )
+            return QIcon(
+                str(Path("assets\\xlsx-icon.png").resolve())
+            )  # Custom XLSX icon (use local image)
         elif file_type == "folder":
-            return QIcon.fromTheme("folder-open")
-        return QIcon.fromTheme("text-plain")  # Default icon
+            return QIcon(
+                str(Path("assets\\folder-icon.jpg").resolve())
+            )  # Custom Folder icon (use local image)
+        return QIcon(":/icons/default-icon.png")  # Default icon (use local image)
 
 
 class FileSelectorWindow(QMainWindow):
