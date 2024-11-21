@@ -7,14 +7,11 @@ from PyQt5.QtGui import QIcon, QPixmap
 from PyQt5.QtWidgets import (
     QApplication,
     QFileDialog,
-    QFrame,
     QGridLayout,
     QHBoxLayout,
     QLabel,
-    QMainWindow,
     QMessageBox,
     QPushButton,
-    QStatusBar,
     QVBoxLayout,
     QWidget,
 )
@@ -37,11 +34,7 @@ class FileBrowserWidget(QWidget):
 
         # Inner HLayout to hold icon, file name, and file path
         self.info_layout = QHBoxLayout()
-        # Browse Button
-        self.button = QPushButton(self.button_text)
-        self.button.setIcon(QIcon.fromTheme("document-open"))
-        self.button.clicked.connect(self.browse_file)
-        self.layout.addWidget(self.button)
+
         # File Icon
         self.icon_label = QLabel(self)
         self.info_layout.addWidget(self.icon_label)
@@ -54,6 +47,12 @@ class FileBrowserWidget(QWidget):
         self.path_label = QLabel("")
         self.layout.addLayout(self.info_layout)
         self.layout.addWidget(self.path_label)
+
+        # Browse Button
+        self.button = QPushButton(self.button_text)
+        self.button.setIcon(QIcon.fromTheme("document-open"))
+        self.button.clicked.connect(self.browse_file)
+        self.layout.addWidget(self.button)
 
         # Set the layout for the main widget
         self.setLayout(self.layout)
@@ -124,15 +123,15 @@ class FileBrowserWidget(QWidget):
         return QIcon(":/icons/default-icon.png")  # Default icon (use local image)
 
 
-class FileSelectorWindow(QMainWindow):
-    def __init__(self):
-        super().__init__()
+class FileSelectorWindow(QWidget):  # Changed from QMainWindow to QWidget
+    def __init__(self, parent=None):
+        super().__init__(parent)
         self.setWindowTitle("Email Sender - File Selector")
         self.setGeometry(100, 100, 600, 400)
         self.setStyleSheet("background-color: #f0f0f0;")
 
         # Layout setup
-        grid_layout = QGridLayout()
+        grid_layout = QGridLayout(self)
 
         # File Browser Widgets for different file types
         self.credentials_widget = FileBrowserWidget(
@@ -158,14 +157,8 @@ class FileSelectorWindow(QMainWindow):
         self.proceed_button.clicked.connect(self.proceed)
         grid_layout.addWidget(self.proceed_button, 3, 0)
 
-        # Status bar
-        self.status_bar = QStatusBar(self)
-        self.setStatusBar(self.status_bar)
-
         # Set the layout for the central widget
-        container = QWidget()
-        container.setLayout(grid_layout)
-        self.setCentralWidget(container)
+        self.setLayout(grid_layout)
 
     def proceed(self):
         # Ensure all files and folders are selected
