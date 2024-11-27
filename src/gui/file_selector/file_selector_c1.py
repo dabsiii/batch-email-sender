@@ -1,6 +1,7 @@
 import sys
 from pathlib import Path
 
+from PyQt5.QtCore import QObject, Qt, pyqtSignal
 from PyQt5.QtWidgets import (
     QApplication,
     QFileDialog,
@@ -11,16 +12,18 @@ from PyQt5.QtWidgets import (
     QVBoxLayout,
     QWidget,
 )
-from gui.file_selector.selection_display.selection_display import SelectionDisplay
 
 from src.gui.file_selector.file_selector import FileSelectorWidget
+from src.gui.file_selector.selection_display.selection_display_c1 import (
+    SelectionDisplayC1,
+)
 
 
-class FileSelectorWidgetC1(FileSelectorWidget, QWidget):
+class FileSelectorWidgetC1(FileSelectorWidget):
     """
-    INFO TEX
-    SELECTION DISPLAY WIDGET
-    SELECT FILE BUTTON
+    1. INFO TEX
+    2. SELECTION DISPLAY WIDGET
+    3. SELECT FILE BUTTON
 
 
     Events:
@@ -32,55 +35,61 @@ class FileSelectorWidgetC1(FileSelectorWidget, QWidget):
 
     def __init__(
         self,
-        info_text: str,
-        icon_path: path,
+        info_text: str = "Select A File",
+        icon_path: Path = None,
+        filter: str = "All Files (*)",
+        button_text: str = "Browse",
     ):
-        super().__init__()
-        self._init_ui()
+
+        self.widget = QWidget()
+        self.widget.setMinimumSize(300, 200)
         self._info_text = info_text
         self._icon_path = icon_path
+        self._filter = filter
+        self._button_text = button_text
+        self._init_ui()
 
     def _init_ui(self):
-
-        # Layout for the widget
-        self._layout = QVBoxLayout()
-        self.setLayout(self._layout)
-
-        self._frame = QFrame()
-        self._frame.setFrameShape(QFrame.Box)
-        self._frame.setFrameShadow(QFrame.Raised)
-        self._layout.addWidget(self._frame)
+        self._frame = QFrame(parent=self.widget)
+        self._frame.setFrameShape(QFrame.StyledPanel)
+        self._frame.setGeometry(50, 50, 250, 140)
 
         self._frame_layout = QVBoxLayout()
+        self._frame_layout.setSpacing(0)
+        # self._frame_layout.setContentsMargins(0, 0, 0, 0)
+        self._frame_layout.setAlignment(Qt.AlignTop)
         self._frame.setLayout(self._frame_layout)
-        # Info
-        self._info = QLabel(text="Select a file .json")
-        self._frame_layout.addWidget(self._info)
 
-        # Text box to display the file path
-        self._selection_display = SelectionDisplay()
-        self._frame_layout.addWidget(self._selection_display)
+        # 1
+        self._info_label = QLabel(text=self._info_text)
+        # self._info_label.setStyleSheet(
+        #     """QLabel {padding: 0px;margin: 0px; color: red; background-color: darkgreen;}"""
+        # )
+        self._frame_layout.addWidget(self._info_label)
+        # 2
+        self._selection_display = SelectionDisplayC1()
+        self._selection_display.show_no_selection()
+        self._frame_layout.addWidget(self._selection_display.widget)
 
-        # Button to open file dialog
-        self.select_button = QPushButton(text="Select File")
-        self.select_button.clicked.connect(self._open_file_dialog)
-        self._frame_layout.addWidget(self.select_button)
+        # 3
+        self._select_file_button = QPushButton(text=self._button_text)
+        self._select_file_button.clicked.connect(self._open_file_dialog)
+        self._frame_layout.addWidget(self._select_file_button)
 
+    def selected_a_file() -> pyqtSignal: ...
+
+    def get_filepath() -> Path: ...
     def _open_file_dialog(self):
         # Open file dialog and get selected file path
         file_path, _ = QFileDialog.getOpenFileName(
-            self, "Select a File", "", "All Files (*)"
+            parent=self.widget,
+            caption="Select a File",
+            directory="",
+            filter=self._filter,
         )
         if file_path:
             self._selection_display.show_selection(
-                Path(file_path), icon_path="sample icon path"
+                path=Path(file_path), iconpath="sample icon path"
             )
         else:
             self._selection_display.show_no_selection()
-
-
-if __name__ == "__main__":
-    app = QApplication(sys.argv)
-    widget = FileSelectorWidget()
-    widget.show()
-    sys.exit(app.exec_())
