@@ -43,14 +43,16 @@ class EmailBot:
         recipient: str,
         subject: str,
         body: str,
+        is_html: bool = False,  # New parameter to indicate if body is HTML
         attachments: Optional[List[str]] = None,
     ) -> None:
         """
-        Sends an email with optional attachments.
+        Sends an email with optional attachments and supports HTML content.
 
         :param recipient: Recipient email address.
         :param subject: Subject of the email.
-        :param body: Body content of the email.
+        :param body: Body content of the email (HTML or plain text).
+        :param is_html: Boolean flag to specify if body is HTML.
         :param attachments: List of file paths to attach.
         """
         try:
@@ -60,8 +62,11 @@ class EmailBot:
             msg["To"] = recipient
             msg["Subject"] = subject
 
-            # Add body
-            msg.attach(MIMEText(body, "plain"))
+            # Add body (support for HTML or plain text)
+            if is_html:
+                msg.attach(MIMEText(body, "html"))  # HTML body
+            else:
+                msg.attach(MIMEText(body, "plain"))  # Plain text body
 
             # Add attachments
             if attachments:
@@ -88,5 +93,3 @@ class EmailBot:
         except Exception as e:
             print(f"Failed to send email: {e}")
             raise
-
-

@@ -25,10 +25,12 @@ def test_email_bot():
             id = record["ID"]
 
             attachment = f"{document_path}\\{file}"
+            html_body = """"""
             email_bot.send_email(
                 recipient=email,
-                subject=f"Test Email Sample {id}_{name}",
-                body=f"This is a test email with an attachment for {name}.",
+                subject=f"Test Email Sample 1 {id}_{name}",
+                body=html_body,
+                is_html=True,
                 attachments=[attachment],  # Update paths
             )
     finally:
