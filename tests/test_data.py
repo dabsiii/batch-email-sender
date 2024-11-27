@@ -7,7 +7,7 @@ from src.data import Data
 
 def test_data():
 
-    relative_path = Path("tests\\excel file.xlsx")
+    relative_path = Path("tests\\files\\excel file.xlsx")
 
     data = Data(relative_path.resolve())
     columns = data.get_columns()

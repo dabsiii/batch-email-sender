@@ -6,10 +6,10 @@ from src.email_bot import EmailBot
 
 
 # Example usage
-def test_email_bot():
-    credentials = Credentials(Path("tests\\credentials.json").resolve())
-    data = Data(Path("tests\\excel file.xlsx").resolve())
-    document_path = Path("tests\\documents").resolve()
+def t_email_bot():
+    credentials = Credentials(Path("tests\\files\\credentials.json").resolve())
+    data = Data(Path("tests\\files\\excel file.xlsx").resolve())
+    document_path = Path("tests\\files\\documents").resolve()
 
     username = credentials.get_username()
     password = credentials.get_password()

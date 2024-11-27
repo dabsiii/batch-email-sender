@@ -6,7 +6,7 @@ from src.credentials import Credentials
 
 
 def test_credentials():
-    relative_path = Path("tests\\credentials.json")
+    relative_path = Path("tests\\files\\credentials.json")
     cred = Credentials(relative_path.resolve())
     ic(cred.get_username())
     ic(cred.get_password())
