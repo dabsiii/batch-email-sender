@@ -1,74 +1,88 @@
 import sys
 from pathlib import Path
 
+from PyQt5.QtCore import QSize, Qt
 from PyQt5.QtWidgets import (
     QApplication,
-    QFileDialog,
     QFrame,
     QHBoxLayout,
     QLabel,
     QLineEdit,
-    QPushButton,
+    QSizePolicy,
+    QStackedWidget,
     QVBoxLayout,
     QWidget,
 )
 
+from src.gui.file_selector.selection_display.selection_display import SelectionDisplay
 
-class SelectionDisplay(QWidget):
+
+class SelectionDisplayC1(SelectionDisplay):
     """
-    ICON
-    PATH Display
+    A
+        A.1 ICON
+        A.2 PATH Display
+            A.2.1 Filename
+            A.2.2 Filepath
+    B. NO SELECTION DISPLAY
     """
 
     def __init__(self):
-        super().__init__()
+
+        self.widget = QWidget()
+        # self.widget.setStyleSheet("color: red;background-color: lightblue;}")
+        self.widget.setMinimumSize(200, 80)
         self._init_ui()
 
-    def _init_ui(self):
-        self._display_widget = QWidget(self)
-
-        # Layout for the widget
-        self._display_widget_layout = QHBoxLayout()
-        self._display_widget.setLayout(self._display_widget_layout)
-
-        self._icon_label = QLabel(text="file icon image")
-        self._display_widget_layout.addWidget(self._icon_label)
-
+    def _init_ui(self) -> None:
+        self._stacked_widget = QStackedWidget(parent=self.widget)
+        # A
+        self._display = QFrame()
+        self._display_layout = QHBoxLayout()
+        self._display.setLayout(self._display_layout)
+        self._stacked_widget.addWidget(self._display)
+        # A.1
+        self._icon_label = QLabel(text=" ICON.jpg")
+        self._display_layout.addWidget(self._icon_label)
+        # A.2
         self._path_display_frame = QFrame()
-        # self._path_display_frame.setFrameShape(QFrame.Box)
-        # self._path_display_frame.setFrameShadow(QFrame.Raised)
         self._path_display_frame_layout = QVBoxLayout()
+        self._path_display_frame_layout.setContentsMargins(0, 0, 0, 0)
         self._path_display_frame.setLayout(self._path_display_frame_layout)
-        self._display_widget_layout.addWidget(self._path_display_frame)
+        self._display_layout.addWidget(self._path_display_frame)
+        # A.2.1
+        self._file_name_line = QLineEdit()
+        self._path_display_frame_layout.addWidget(self._file_name_line)
 
-        # Text box to display the file path
-        self.file_path_box = QLineEdit()
-        self.file_path_box.setPlaceholderText("file path")
-        self._path_display_frame_layout.addWidget(self.file_path_box)
+        # A.2.2
+        self._file_path_line = QLineEdit()
+        self._path_display_frame_layout.addWidget(self._file_path_line)
 
-        # Text box to display the file path
-        self.file_name_box = QLineEdit()
-        self.file_name_box.setPlaceholderText("file name")
-        self._path_display_frame_layout.addWidget(self.file_name_box)
+        # B
+        self._no_selection = QWidget()
+        self._no_selection_layout = QVBoxLayout()
+        self._no_selection.setLayout(self._no_selection_layout)
+        self._stacked_widget.addWidget(self._no_selection)
 
-    def _set_file_path(self, filepath: Path):
-        self.show()
-        self.file_path_box.setText(filepath.as_posix())
-        self.file_name_box.setText(filepath.name)
-        print(f"file path set: {filepath}")
+        self._no_selection_label = QLabel(text=" No Selection")
+        self._no_selection_label.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
+        self._no_selection_label.setStyleSheet(
+            "QLabel {background-color:lightgray; text-align: center;}"
+        )
 
-    def _set_icon(self, icon_path: Path):
-        print(f"icon set: {icon_path}")
+        self._no_selection_layout.addWidget(
+            self._no_selection_label, alignment=Qt.AlignHCenter, stretch=1
+        )
+
+    def show_selection(self, path: Path, iconpath: Path = None) -> None:
+
+        self._stacked_widget.setCurrentIndex(0)
+        self._file_path_line.setText(path.as_posix())
+        self._file_name_line.setText(path.name)
 
     def show_no_selection(self) -> None:
-        print("Hello")
-
-    def show_selection(self, filepath: Path, icon_path: Path = None):
-        if filepath:
-            self._set_file_path(filepath)
-            self._set_icon(icon_path)
-        else:
-            self._show_no_selection()
+        print("layout changed to no selection")
+        self._stacked_widget.setCurrentIndex(1)
 
 
 if __name__ == "__main__":
