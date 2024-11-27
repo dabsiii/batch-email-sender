@@ -1,14 +1,13 @@
 import os
 import sys
-from pathlib import Path
 
+from gmail_editor import GmailLikeEditor  # Assuming GmailLikeEditor is imported
 from PyQt5.QtCore import Qt
-from PyQt5.QtGui import QIcon, QPixmap
+from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import (
     QApplication,
     QFileDialog,
     QGridLayout,
-    QHBoxLayout,
     QLabel,
     QMessageBox,
     QPushButton,
@@ -20,7 +19,6 @@ from PyQt5.QtWidgets import (
 class FileBrowserWidget(QWidget):
     def __init__(self, label_text, button_text, file_type, parent=None):
         super().__init__(parent)
-
         self.label_text = label_text
         self.button_text = button_text
         self.file_type = file_type
@@ -33,7 +31,7 @@ class FileBrowserWidget(QWidget):
         self.layout.addWidget(self.label)
 
         # Inner HLayout to hold icon, file name, and file path
-        self.info_layout = QHBoxLayout()
+        self.info_layout = QVBoxLayout()
 
         # File Icon
         self.icon_label = QLabel(self)
@@ -60,16 +58,6 @@ class FileBrowserWidget(QWidget):
         # Store file path
         self.file_path = None
 
-        # Apply an outline around the entire widget for clear separation
-        self.setStyleSheet(
-            """
-            outline: 3px solid #4CAF50; 
-            outline-offset: 5px;
-            padding: 10px;
-            margin-bottom: 20px;  # To create space between the browsers
-        """
-        )
-
     def browse_file(self):
         file_path = None
         if self.file_type == "json":
@@ -91,16 +79,10 @@ class FileBrowserWidget(QWidget):
 
     def update_display(self):
         """Update the display with the selected file path, icon, and file name."""
-        # Extract the file name from the full path
         file_name = os.path.basename(self.file_path)
-
-        # Set the file name in the label
         self.file_name_label.setText(file_name)
-
-        # Show the full path in the label
         self.path_label.setText(f"Full Path: {self.file_path}")
 
-        # Set the appropriate icon based on file type
         icon = self.get_file_icon(self.file_type)
         pixmap = icon.pixmap(30, 30)  # Convert to QPixmap and scale it
         self.icon_label.setPixmap(pixmap)
@@ -109,18 +91,12 @@ class FileBrowserWidget(QWidget):
     def get_file_icon(self, file_type):
         """Return the appropriate icon based on the file type"""
         if file_type == "json":
-            return QIcon(
-                str(Path("assets\\json-icon.png").resolve())
-            )  # Custom JSON icon (use local image)
+            return QIcon("assets/json-icon.png")
         elif file_type == "xlsx":
-            return QIcon(
-                str(Path("assets\\xlsx-icon.png").resolve())
-            )  # Custom XLSX icon (use local image)
+            return QIcon("assets/xlsx-icon.png")
         elif file_type == "folder":
-            return QIcon(
-                str(Path("assets\\folder-icon.jpg").resolve())
-            )  # Custom Folder icon (use local image)
-        return QIcon(":/icons/default-icon.png")  # Default icon (use local image)
+            return QIcon("assets/folder-icon.jpg")
+        return QIcon(":/icons/default-icon.png")  # Default icon
 
 
 class FileSelectorWindow(QWidget):  # Changed from QMainWindow to QWidget
@@ -172,22 +148,20 @@ class FileSelectorWindow(QWidget):  # Changed from QMainWindow to QWidget
             )
             return
 
-        # Show a message box with the selected paths
-        QMessageBox.information(
-            self,
-            "Proceeding",
-            f"Proceeding with the following:\n"
-            f"Sender Credentials File: {self.credentials_widget.file_path}\n"
-            f"Excel File: {self.excel_widget.file_path}\n"
-            f"Attachment Folder: {self.folder_widget.file_path}",
-        )
+        # Proceed to open the Gmail editor
+        self.open_gmail_editor()
+
+    def open_gmail_editor(self):
+        """Open the GmailLikeEditor window."""
+        self.editor_window = GmailLikeEditor(self)
+        self.editor_window.show()
 
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
 
-    # Start with the file selector window
-    selector_window = FileSelectorWindow()
-    selector_window.show()
+    # Create and show the file selector window
+    file_selector_window = FileSelectorWindow()
+    file_selector_window.show()
 
     sys.exit(app.exec_())
