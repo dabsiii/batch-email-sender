@@ -19,7 +19,7 @@ class SelectionDisplayC1:
     def __init__(self):
         self.widget = QWidget()
         self.widget.setMinimumSize(200, 80)
-        self.widget.setStyleSheet("background-color: #f9f9f9;")
+        # self.widget.setStyleSheet("background-color: #f9f9f9;")
         self._init_ui()
 
     def _init_ui(self) -> None:
