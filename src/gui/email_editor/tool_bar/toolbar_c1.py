@@ -1,4 +1,5 @@
 from PyQt5.QtCore import pyqtSignal
+from PyQt5.QtGui import QFont
 from PyQt5.QtWidgets import QAction, QComboBox, QToolBar
 
 from src.gui.email_editor.tool_bar.toolbar import Toolbar
@@ -18,6 +19,7 @@ class ToolBarC1(Toolbar):
 
         # Add actions for the toolbar (bold, italic, underline, font size)
         self._bold_action = QAction("B")
+        # self._bold_action.setFont(QFont("Arial", 8, QFont.Bold))
         self.widget.addAction(self._bold_action)
 
         self._italic_action = QAction("I")
