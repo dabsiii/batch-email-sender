@@ -28,7 +28,9 @@ class ToolBarC1(Toolbar):
 
         # Add font size selector dropdown to the toolbar
         self._font_size_selector = QComboBox()
-        self._font_size_selector.addItems(["12pt", "14pt", "16pt", "18pt", "20pt"])
+        self._font_size_selector.addItems(
+            ["10pt", "12pt", "14pt", "16pt", "18pt", "20pt"]
+        )
         self.widget.addWidget(self._font_size_selector)
 
     @property

@@ -32,12 +32,10 @@ class EmailBodyC1:
         self._text_edit.setTextCursor(cursor)
 
     def change_font_size(self, font_size: str):
-        selected_size = font_size
+        font_size = int(font_size[:-2])
         cursor = self._text_edit.textCursor()
         format = cursor.charFormat()
-        format.setFontPointSize(
-            int(selected_size[:-2])
-        )  # Remove "pt" and convert to int for font size
+        format.setFontPointSize(font_size)
         cursor.setCharFormat(format)
         self._text_edit.setTextCursor(cursor)
 
@@ -55,7 +53,8 @@ class EmailBodyC1:
 
     def _on_character_typed(self):
         default_format = QTextCharFormat()
-        default_format.setFontWeight(12)
+        default_format.setFontWeight(0)
+        default_format.setFontPointSize(10)
         default_format.setFontItalic(False)
         default_format.setFontUnderline(False)
         cursor = self._text_edit.textCursor()
