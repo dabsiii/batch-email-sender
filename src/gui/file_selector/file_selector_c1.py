@@ -47,6 +47,7 @@ class FileSelectorWidgetC1(FileSelectorWidget):
         self._icon_path = icon_path
         self._filter = filter
         self._button_text = button_text
+        self._path: Path = None
         self._init_ui()
 
     def _init_ui(self):
@@ -73,12 +74,15 @@ class FileSelectorWidgetC1(FileSelectorWidget):
 
         # 3
         self._select_file_button = QPushButton(text=self._button_text)
+        self._select_file_button.setCursor(Qt.PointingHandCursor)
         self._select_file_button.clicked.connect(self._open_file_dialog)
         self._frame_layout.addWidget(self._select_file_button)
 
-    def selected_a_file() -> pyqtSignal: ...
+    def selected_a_file(self) -> pyqtSignal: ...
 
-    def get_filepath() -> Path: ...
+    def get_path(self) -> Path:
+        return self._path()
+
     def _open_file_dialog(self):
         # Open file dialog and get selected file path
         file_path, _ = QFileDialog.getOpenFileName(
@@ -88,8 +92,11 @@ class FileSelectorWidgetC1(FileSelectorWidget):
             filter=self._filter,
         )
         if file_path:
+            self._path = Path(file_path)
             self._selection_display.show_selection(
-                path=Path(file_path), iconpath="sample icon path"
+                path=Path(file_path), iconpath=self._icon_path
             )
+
         else:
+            self._path = None
             self._selection_display.show_no_selection()
