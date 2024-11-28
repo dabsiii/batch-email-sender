@@ -1,12 +1,12 @@
 from abc import ABC, abstractmethod
 from pathlib import Path
 
-from PyQt5.QtCore import QObject, pyqtSignal
+from PyQt5.QtCore import pyqtSignal
 
 
-class FileSelectorWidget(ABC):
+class Selector(ABC):
     @abstractmethod
-    def selected_a_file() -> pyqtSignal: ...
+    def selected() -> pyqtSignal: ...
 
     @abstractmethod
     def get_path() -> Path: ...

@@ -2,11 +2,8 @@ import sys
 
 from PyQt5.QtWidgets import QApplication
 
-from src.gui.file_selector.file_selector_c1 import FileSelectorWidgetC1
-from src.gui.file_selector.selection_display.selection_display_c1 import (
-    SelectionDisplayC1,
-)
-
+from src.gui.selector.file_selector import FileSelector
+from src.gui.selector.selection_display.selection_display_c1 import SelectionDisplayC1
 
 # def test_displaySelection():
 #     app = QApplication(sys.argv)

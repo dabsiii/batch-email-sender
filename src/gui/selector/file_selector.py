@@ -1,25 +1,21 @@
 import sys
 from pathlib import Path
 
-from PyQt5.QtCore import QObject, Qt, pyqtSignal
+from PyQt5.QtCore import Qt, pyqtSignal
 from PyQt5.QtWidgets import (
-    QApplication,
     QFileDialog,
     QFrame,
     QLabel,
-    QLineEdit,
     QPushButton,
     QVBoxLayout,
     QWidget,
 )
 
-from src.gui.file_selector.file_selector import FileSelectorWidget
-from src.gui.file_selector.selection_display.selection_display_c1 import (
-    SelectionDisplayC1,
-)
+from src.gui.selector.selection_display.selection_display_c1 import SelectionDisplayC1
+from src.gui.selector.selector import Selector
 
 
-class FileSelectorWidgetC1(FileSelectorWidget):
+class FileSelector(Selector):
     """
     1. INFO TEX
     2. SELECTION DISPLAY WIDGET
@@ -39,6 +35,7 @@ class FileSelectorWidgetC1(FileSelectorWidget):
         icon_path: Path = None,
         filter: str = "All Files (*)",
         button_text: str = "Browse",
+        dialog_caption: str = "Select A File",
     ):
 
         self.widget = QWidget()
@@ -48,6 +45,7 @@ class FileSelectorWidgetC1(FileSelectorWidget):
         self._filter = filter
         self._button_text = button_text
         self._path: Path = None
+        self._dialog_caption: str = dialog_caption
         self._init_ui()
 
     def _init_ui(self):
@@ -78,7 +76,7 @@ class FileSelectorWidgetC1(FileSelectorWidget):
         self._select_file_button.clicked.connect(self._open_file_dialog)
         self._frame_layout.addWidget(self._select_file_button)
 
-    def selected_a_file(self) -> pyqtSignal: ...
+    def selected(self) -> pyqtSignal: ...
 
     def get_path(self) -> Path:
         return self._path()
@@ -87,7 +85,7 @@ class FileSelectorWidgetC1(FileSelectorWidget):
         # Open file dialog and get selected file path
         file_path, _ = QFileDialog.getOpenFileName(
             parent=self.widget,
-            caption="Select a File",
+            caption=self._dialog_caption,
             directory="",
             filter=self._filter,
         )
