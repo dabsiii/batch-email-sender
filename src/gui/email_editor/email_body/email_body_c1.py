@@ -1,52 +1,76 @@
-from typing import List
-
-from PyQt5.QtGui import QFont, QTextCharFormat
-from PyQt5.QtWidgets import QTextEdit, QWidget
-
-from src.gui.email_editor.email_body.email_body import EmailBody
+from PyQt5.QtCore import QEvent, QObject, pyqtSignal
+from PyQt5.QtGui import QFont, QKeyEvent, QTextCharFormat, QTextCursor
+from PyQt5.QtWidgets import QApplication, QTextEdit, QVBoxLayout, QWidget
 
 
-class EmailBodyC1(EmailBody):
+class EmailBodyC1:
     def __init__(self):
         self.widget = QTextEdit()
 
         self._text_edit = self.widget
+
+        self.key_filter = KeyPressFilter()
+        self._text_edit.installEventFilter(self.key_filter)  # Install the event filter
+        self.key_filter.characterTyped.connect(self._on_character_typed)
+
         self._text_edit.setAcceptRichText(True)
         self._text_edit.setStyleSheet("border: 1px solid #ccc; padding: 5px;")
 
-    def apply_bold(self) -> None:
+    def apply_bold(self):
         cursor = self._text_edit.textCursor()
         cursor.mergeCharFormat(self._create_char_format(weight=QFont.Weight.Bold))
         self._text_edit.setTextCursor(cursor)
 
-    def apply_italic(self) -> None:
+    def apply_italic(self):
         cursor = self._text_edit.textCursor()
         cursor.mergeCharFormat(self._create_char_format(italic=True))
         self._text_edit.setTextCursor(cursor)
 
-    def apply_underline(self) -> None:
+    def apply_underline(self):
         cursor = self._text_edit.textCursor()
         cursor.mergeCharFormat(self._create_char_format(underline=True))
         self._text_edit.setTextCursor(cursor)
 
-    def change_font_size(self, fontsize: str) -> None:
-        selected_size = fontsize
+    def change_font_size(self, font_size: str):
+        selected_size = font_size
         cursor = self._text_edit.textCursor()
         format = cursor.charFormat()
-        format.setFontPointSize(int(selected_size[:-2]))
+        format.setFontPointSize(
+            int(selected_size[:-2])
+        )  # Remove "pt" and convert to int for font size
         cursor.setCharFormat(format)
         self._text_edit.setTextCursor(cursor)
 
     def _create_char_format(
-        self, weight=QFont.Weight.Normal, italic=False, underline=False
+        self, weight: int = None, italic: bool = None, underline: bool = None
     ):
-        """Create a character format for text styling"""
         char_format = QTextCharFormat()
-        char_format.setFontWeight(weight)
-        char_format.setFontItalic(italic)  # Use setFontItalic to apply italic
-        char_format.setFontUnderline(underline)  # Use setFontUnderline for underline
+        if weight is not None:
+            char_format.setFontWeight(weight)
+        if italic is not None:
+            char_format.setFontItalic(italic)
+        if underline is not None:
+            char_format.setFontUnderline(underline)
         return char_format
 
-    def highlight_variables(self, variables: List[str]): ...
+    def _on_character_typed(self):
+        default_format = QTextCharFormat()
+        default_format.setFontWeight(12)
+        default_format.setFontItalic(False)
+        default_format.setFontUnderline(False)
+        cursor = self._text_edit.textCursor()
+        cursor.mergeCharFormat(default_format)
+        self._text_edit.setTextCursor(cursor)
 
-    def get_html(self): ...
+
+class KeyPressFilter(QObject):
+    characterTyped = pyqtSignal(str)  # Custom signal for typed characters
+
+    def eventFilter(self, obj, event):
+        if obj and isinstance(obj, QTextEdit) and event.type() == QEvent.KeyPress:
+            key_event = event
+            if key_event.text().isprintable():  # Check if it's a printable character
+                self.characterTyped.emit(
+                    key_event.text()
+                )  # Emit signal for typed character
+        return super().eventFilter(obj, event)
