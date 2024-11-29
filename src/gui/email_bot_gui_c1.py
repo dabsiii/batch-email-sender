@@ -2,7 +2,16 @@ import sys
 from pathlib import Path
 
 from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QApplication, QFrame, QHBoxLayout, QVBoxLayout, QWidget
+from PyQt5.QtWidgets import (
+    QApplication,
+    QFrame,
+    QHBoxLayout,
+    QPushButton,
+    QSizePolicy,
+    QSpacerItem,
+    QVBoxLayout,
+    QWidget,
+)
 
 from src.gui.email_bot_gui import EmailBotGui
 from src.gui.email_editor.email_editor_c1 import EmailEditorC1
@@ -12,12 +21,15 @@ from src.gui.selector.folder_selector import FolderSelector
 
 class EmailBotGuiC1(EmailBotGui):
     """
-    A. Selectors
-        A.1 Credentials
-        A.2 Data
-        A.3 Attachment folder
-    B. Gmail Editor
-    C. Send Email
+    INPUTS FRAME
+        A. Selectors
+            A.1 Credentials
+            A.2 Data
+            A.3 Attachment folder
+        B. Gmail Editor
+        C. Send Email
+    OUTPUTS FRAME
+        D. SEND EMAIL
     """
 
     def __init__(self):
@@ -25,14 +37,34 @@ class EmailBotGuiC1(EmailBotGui):
 
     def _init_gui(self) -> None:
         self._widget = QWidget()
-        self._widget_layout = QHBoxLayout()
+        self._widget.setMinimumSize(1000, 400)
+        self._widget_layout = QVBoxLayout()
         self._widget.setLayout(self._widget_layout)
+
+        # INPUTS FRAME
+        self._input_frame = QFrame()
+
+        self._input_frame.setStyleSheet("QFrame {background-color: red;}")
+        self._input_frame.setFixedHeight(600)
+        self._input_frame_layout = QHBoxLayout()
+        self._input_frame_layout.setContentsMargins(0, 0, 0, 0)
+
+        self._input_frame.setLayout(self._input_frame_layout)
+        self._widget_layout.addWidget(self._input_frame)
 
         # A Selectors
         self._selectors_frame = QFrame()
+        self._selectors_frame.setFixedWidth(300)
+        # self._selectors_frame.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
+        self._selectors_frame.setStyleSheet("QFrame {background-color: blue;}")
+
         self._selectors_frame_layout = QVBoxLayout()
+        self._selectors_frame_layout.setSpacing(0)
+        # self._selectors_frame_layout.setStretch(0, 1)
+        self._selectors_frame_layout.setContentsMargins(0, 0, 0, 0)
+        self._selectors_frame_layout.setAlignment(Qt.AlignHCenter)
         self._selectors_frame.setLayout(self._selectors_frame_layout)
-        self._widget_layout.addWidget(self._selectors_frame)
+        self._input_frame_layout.addWidget(self._selectors_frame, stretch=1)
 
         # A.1 Credentials
         self._credential_selector = FileSelector(
@@ -40,7 +72,9 @@ class EmailBotGuiC1(EmailBotGui):
             icon_path=Path("assets\\json-icon.png").resolve(),
             filter="JSON Files (*.json);;All Files (*)",
         )
-        self._selectors_frame_layout.addWidget(self._credential_selector.widget)
+        self._selectors_frame_layout.addWidget(
+            self._credential_selector.widget, stretch=0, alignment=Qt.AlignHCenter
+        )
 
         # A.2 Data
         self._data_selector = FileSelector(
@@ -48,18 +82,34 @@ class EmailBotGuiC1(EmailBotGui):
             icon_path=Path("assets\\xlsx-icon.png").resolve(),
             filter="Excel Files (*.xls *.xlsx);;All Files (*)",
         )
-        self._selectors_frame_layout.addWidget(self._data_selector.widget)
+        self._selectors_frame_layout.addWidget(
+            self._data_selector.widget, stretch=0, alignment=Qt.AlignHCenter
+        )
 
         # 3 Attachment Folder
         self._attachment_folder_selector = FolderSelector(
             info_text="Select a Folder containing the attachment",
             icon_path=Path("assets\\folder-icon.jpg").resolve(),
         )
-        self._selectors_frame_layout.addWidget(self._attachment_folder_selector.widget)
+        self._selectors_frame_layout.addWidget(
+            self._attachment_folder_selector.widget,
+            stretch=0,
+            alignment=Qt.AlignHCenter,
+        )
 
         # B. Gmail Editor
         self._email_editor = EmailEditorC1()
-        self._widget_layout.addWidget(self._email_editor.widget)
+        self._input_frame_layout.addWidget(self._email_editor.widget)
+
+        # OUTPUTS FRAME
+
+        self._output_frame = QFrame()
+        self._output_frame_layout = QVBoxLayout()
+        self._output_frame.setLayout(self._output_frame_layout)
+        self._widget_layout.addWidget(self._output_frame)
+
+        self._send_email_button = QPushButton(text="send email")
+        self._output_frame_layout.addWidget(self._send_email_button)
 
     def show(self) -> None:
         app = QApplication(sys.argv)
