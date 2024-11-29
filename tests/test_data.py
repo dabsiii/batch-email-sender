@@ -2,7 +2,7 @@ from pathlib import Path
 
 from icecream import ic
 
-from src.data import Data
+from src.model.data import Data
 
 
 def test_data():

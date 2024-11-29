@@ -2,7 +2,7 @@ from pathlib import Path
 
 from icecream import ic
 
-from src.credentials import Credentials
+from src.model.credentials import Credentials
 
 
 def test_credentials():

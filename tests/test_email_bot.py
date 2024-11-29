@@ -1,8 +1,8 @@
 from pathlib import Path
 
-from src.credentials import Credentials
-from src.data import Data
-from src.email_bot import EmailBot
+from src.model.credentials import Credentials
+from src.model.data import Data
+from src.model.email_bot import EmailBot
 
 
 # Example usage
