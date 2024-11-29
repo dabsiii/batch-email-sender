@@ -38,3 +38,9 @@ class EmailBotGui(ABC):
 
     @abstractmethod
     def get_email_subject(self) -> str: ...
+
+    @abstractmethod
+    def disable_send_email(self) -> str: ...
+
+    @abstractmethod
+    def enable_send_email(self) -> str: ...

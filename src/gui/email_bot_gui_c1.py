@@ -116,8 +116,14 @@ class EmailBotGuiC1(EmailBotGui):
         self._widget_layout.addWidget(self._output_frame)
 
         self._send_email_button = QPushButton(text="send email")
+        self._send_email_button.setDisabled(True)
+        self._send_email_button.setStyleSheet("background-color: lightgray;")
+        self._send_email_button.setFixedSize(200, 50)
+        self._send_email_button.setCursor(Qt.PointingHandCursor)
         self._send_email_button.clicked.connect(self._send_email_clicked.publish)
-        self._output_frame_layout.addWidget(self._send_email_button)
+        self._output_frame_layout.addWidget(
+            self._send_email_button, alignment=Qt.AlignCenter
+        )
 
         self._handle_events()
 
@@ -167,3 +173,11 @@ class EmailBotGuiC1(EmailBotGui):
 
     def get_email_subject(self) -> str:
         return self._email_editor.get_subject()
+
+    def disable_send_email(self) -> str:
+        self._send_email_button.setDisabled(True)
+        self._send_email_button.setStyleSheet("background-color: lightgray;")
+
+    def enable_send_email(self) -> str:
+        self._send_email_button.setEnabled(True)
+        self._send_email_button.setStyleSheet("background-color: blue;")

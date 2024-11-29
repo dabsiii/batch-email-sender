@@ -1,6 +1,7 @@
 from pathlib import Path
 from typing import Dict, List
 
+from src.event.event_ import Event_
 from src.gui.email_bot_gui_c1 import EmailBotGuiC1
 from src.model.credentials import Credentials
 from src.model.data import Data
@@ -15,11 +16,17 @@ class EmailBotApp:
         self._data: Data = None
         self._attachment_folder_path: Path = None
         self._email_bot: EmailBot = None
+        self._ready = Event_()
+        self._not_ready = Event_()
         self._gui = EmailBotGuiC1()
         self._gui.selected_credentials.subscribe(self._read_credentials)
         self._gui.selected_data.subscribe(self._read_data)
         self._gui.selected_folder.subscribe(self._read_attachment_folder)
         self._gui.send_email_clicked.subscribe(self._on_send_email_click)
+        
+
+        self._ready.subscribe(lambda e: self._gui.enable_send_email())
+        self._not_ready.subscribe(lambda e: self._gui.disable_send_email())
 
     def start(self):
         self._gui.show()
@@ -33,15 +40,18 @@ class EmailBotApp:
         username = self._credentials.get_username()
         password = self._credentials.get_password()
         self._email_bot = EmailBot(username, password)
+        self._check_ready()
 
     def _read_data(self, data) -> None:
         data_file_path = self._gui.get_data_path()
         self._data = Data(data_file_path)
         self._variables = self._data.get_columns()
         self._gui.update_variables(self._variables)
+        self._check_ready()
 
     def _read_attachment_folder(self, data) -> None:
         self._attachment_folder_path = self._gui.get_attachment_folder_path()
+        self._check_ready()
 
     def _on_send_email_click(self, data) -> None:
         credentials = self._credentials
@@ -85,3 +95,13 @@ class EmailBotApp:
                 out_text: str = out_text.replace(substring, str(value))
 
         return out_text
+
+    def _check_ready(self):
+        credentials = self._gui.get_credentials_path() is not None
+        data = self._gui.get_data_path() is not None
+        attachment_folder = self._gui.get_attachment_folder_path() is not None
+
+        if credentials and data and attachment_folder:
+            self._ready.publish(True)
+        else:
+            self._not_ready.publish(True)
