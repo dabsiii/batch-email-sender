@@ -50,7 +50,7 @@ class EmailBotGuiC1(EmailBotGui):
         # INPUTS FRAME
         self._input_frame = QFrame()
 
-        self._input_frame.setStyleSheet("QFrame {background-color: red;}")
+        # self._input_frame.setStyleSheet("QFrame {background-color: red;}")
         self._input_frame.setFixedHeight(600)
         self._input_frame_layout = QHBoxLayout()
         self._input_frame_layout.setContentsMargins(0, 0, 0, 0)
@@ -62,7 +62,7 @@ class EmailBotGuiC1(EmailBotGui):
         self._selectors_frame = QFrame()
         self._selectors_frame.setFixedWidth(300)
         # self._selectors_frame.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
-        self._selectors_frame.setStyleSheet("QFrame {background-color: blue;}")
+        # self._selectors_frame.setStyleSheet("QFrame {background-color: blue;}")
 
         self._selectors_frame_layout = QVBoxLayout()
         self._selectors_frame_layout.setSpacing(0)
@@ -164,3 +164,6 @@ class EmailBotGuiC1(EmailBotGui):
 
     def get_email_body_html(self) -> str:
         return self._email_editor.get_body_html()
+
+    def get_email_subject(self) -> str:
+        return self._email_editor.get_subject()

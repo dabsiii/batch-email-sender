@@ -35,3 +35,6 @@ class EmailBotGui(ABC):
 
     @abstractmethod
     def get_email_body_html(self) -> str: ...
+
+    @abstractmethod
+    def get_email_subject(self) -> str: ...
