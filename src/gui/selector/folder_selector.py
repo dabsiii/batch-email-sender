@@ -49,7 +49,7 @@ class FolderSelector(Selector):
     def _init_ui(self):
         self._frame = QFrame(parent=self.widget)
         self._frame.setFrameShape(QFrame.StyledPanel)
-        self._frame.setGeometry(50, 50, 250, 140)
+        self._frame.setFixedSize(300, 120)
 
         self._frame_layout = QVBoxLayout()
         self._frame_layout.setSpacing(0)
@@ -66,7 +66,9 @@ class FolderSelector(Selector):
         # 2
         self._selection_display = SelectionDisplayC1()
         self._selection_display.show_no_selection()
-        self._frame_layout.addWidget(self._selection_display.widget)
+        self._frame_layout.addWidget(
+            self._selection_display.widget, alignment=Qt.AlignHCenter
+        )
 
         # 3
         self._select_file_button = QPushButton(text=self._button_text)

@@ -39,6 +39,7 @@ class FileSelector(Selector):
     ):
 
         self.widget = QWidget()
+        #self.widget.setStyleSheet("background-color: lightblue;")
         self.widget.setMinimumSize(300, 200)
         self._info_text = info_text
         self._icon_path = icon_path
@@ -50,8 +51,9 @@ class FileSelector(Selector):
 
     def _init_ui(self):
         self._frame = QFrame(parent=self.widget)
+        #self._frame.setStyleSheet("QFrame {background-color: yellow;}")
         self._frame.setFrameShape(QFrame.StyledPanel)
-        self._frame.setGeometry(50, 50, 250, 140)
+        self._frame.setFixedSize(250, 120)
 
         self._frame_layout = QVBoxLayout()
         self._frame_layout.setSpacing(0)
@@ -68,7 +70,9 @@ class FileSelector(Selector):
         # 2
         self._selection_display = SelectionDisplayC1()
         self._selection_display.show_no_selection()
-        self._frame_layout.addWidget(self._selection_display.widget)
+        self._frame_layout.addWidget(
+            self._selection_display.widget, alignment=Qt.AlignHCenter
+        )
 
         # 3
         self._select_file_button = QPushButton(text=self._button_text)
