@@ -82,4 +82,5 @@ class EmailEditorC1(EmailEditor):
     def get_body_html(self) -> str:
         return self._body_editor.get_html()
 
-    def get_subject(self) -> str: ...
+    def get_subject(self) -> str:
+        return self._subject_edit.text()
