@@ -76,8 +76,10 @@ class EmailEditorC1(EmailEditor):
             self._body_editor.change_font_size
         )
 
-    def set_variables(self, variables: List[str]): ...
+    def set_variables(self, variables: List[str]):
+        self._variable_list.set_variables(variables)
 
-    def get_body_html(self) -> str: ...
+    def get_body_html(self) -> str:
+        return self._body_editor.get_html()
 
     def get_subject(self) -> str: ...

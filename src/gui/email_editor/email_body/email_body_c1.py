@@ -1,9 +1,13 @@
+from typing import List
+
 from PyQt5.QtCore import QEvent, QObject, pyqtSignal
 from PyQt5.QtGui import QFont, QKeyEvent, QTextCharFormat, QTextCursor
 from PyQt5.QtWidgets import QApplication, QSizePolicy, QTextEdit, QVBoxLayout, QWidget
 
+from src.gui.email_editor.email_body.email_body import EmailBody
 
-class EmailBodyC1:
+
+class EmailBodyC1(EmailBody):
     def __init__(self):
         self.widget = QTextEdit()
         self.widget.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
@@ -40,6 +44,11 @@ class EmailBodyC1:
         format.setFontPointSize(font_size)
         cursor.setCharFormat(format)
         self._text_edit.setTextCursor(cursor)
+
+    def highlight_variables(self, variables: List[str]): ...
+
+    def get_html(self):
+        return self._text_edit.toHtml()
 
     def _create_char_format(
         self, weight: int = None, italic: bool = None, underline: bool = None
