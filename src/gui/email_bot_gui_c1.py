@@ -11,6 +11,7 @@ from PyQt5.QtWidgets import (
     QPushButton,
     QSizePolicy,
     QSpacerItem,
+    QTextEdit,
     QVBoxLayout,
     QWidget,
 )
@@ -33,7 +34,8 @@ class EmailBotGuiC1(EmailBotGui):
         B. Gmail Editor
         C. Send Email
     OUTPUTS FRAME
-        D. SEND EMAIL
+        D. Logger
+        E. SEND EMAIL
     """
 
     def __init__(self):
@@ -113,12 +115,12 @@ class EmailBotGuiC1(EmailBotGui):
         self._input_frame_layout.addWidget(self._email_editor.widget)
 
         # OUTPUTS FRAME
-
         self._output_frame = QFrame()
         self._output_frame_layout = QVBoxLayout()
         self._output_frame.setLayout(self._output_frame_layout)
         self._widget_layout.addWidget(self._output_frame)
 
+        # E. send email button
         self._send_email_button = QPushButton(text="send email")
         self._send_email_button.setDisabled(True)
         self._send_email_button.setStyleSheet("background-color: lightgray;")
@@ -128,6 +130,12 @@ class EmailBotGuiC1(EmailBotGui):
         self._output_frame_layout.addWidget(
             self._send_email_button, alignment=Qt.AlignHCenter
         )
+        # Logger
+        self._logger = QTextEdit()
+        #self._logger.setStyleSheet("background-color: gray; color: white;")
+        # self._logger.setReadOnly(True)  # Make it read-only
+        self._logger.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOn)
+        self._output_frame_layout.addWidget(self._logger)
 
         self._handle_events()
 
@@ -185,3 +193,6 @@ class EmailBotGuiC1(EmailBotGui):
     def enable_send_email(self) -> str:
         self._send_email_button.setEnabled(True)
         self._send_email_button.setStyleSheet("background-color: blue;")
+
+    def log(self, message: str) -> None:
+        self._logger.append(message)

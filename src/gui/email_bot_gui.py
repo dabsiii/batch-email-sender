@@ -44,3 +44,6 @@ class EmailBotGui(ABC):
 
     @abstractmethod
     def enable_send_email(self) -> None: ...
+
+    @abstractmethod
+    def log(self, message: str) -> None: ...

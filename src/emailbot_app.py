@@ -1,3 +1,4 @@
+import threading
 from pathlib import Path
 from typing import Dict, List
 
@@ -10,6 +11,9 @@ from src.model.email_bot import EmailBot
 
 class EmailBotApp:
     def __init__(self):
+        self._email_sending_thread = threading.Thread(
+            target=lambda: self._on_send_email_click(0)
+        )
 
         self._variables: List = None
         self._credentials: Credentials = None
@@ -22,7 +26,9 @@ class EmailBotApp:
         self._gui.selected_credentials.subscribe(self._read_credentials)
         self._gui.selected_data.subscribe(self._read_data)
         self._gui.selected_folder.subscribe(self._read_attachment_folder)
-        self._gui.send_email_clicked.subscribe(self._on_send_email_click)
+        self._gui.send_email_clicked.subscribe(
+            lambda e: self._email_sending_thread.start()
+        )
 
         self._ready.subscribe(lambda e: self._gui.enable_send_email())
         self._not_ready.subscribe(lambda e: self._gui.disable_send_email())
@@ -40,6 +46,7 @@ class EmailBotApp:
             username = self._credentials.get_username()
             password = self._credentials.get_password()
             self._email_bot = EmailBot(username, password)
+
         self._check_ready()
 
     def _read_data(self, data) -> None:
@@ -66,6 +73,7 @@ class EmailBotApp:
         username = credentials.get_username()
         password = credentials.get_password()
         email_bot = EmailBot(username, password)
+        email_bot.email_sent.subscribe(self._log)
 
         try:
             email_bot.connect()
@@ -110,3 +118,9 @@ class EmailBotApp:
             self._ready.publish(True)
         else:
             self._not_ready.publish(True)
+
+    def _log(self, data) -> None:
+        print("logging ")
+        recipient = data["recipient"]
+        message = f"Email succesfuly sent to {recipient}"
+        self._gui.log(message)

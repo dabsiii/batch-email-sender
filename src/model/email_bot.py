@@ -99,7 +99,7 @@ class EmailBot:
             if self.server:
                 self.server.send_message(msg)
                 self.email_sent.publish({"recipient": recipient})
-                print(f"Email sent successfully to {recipient}.")
+                print(f"Email sent successfully to {recipient}. published email sent")
             else:
                 print("SMTP server connection is not established.")
 
