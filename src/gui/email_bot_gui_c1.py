@@ -132,8 +132,8 @@ class EmailBotGuiC1(EmailBotGui):
         )
         # Logger
         self._logger = QTextEdit()
-        #self._logger.setStyleSheet("background-color: gray; color: white;")
-        # self._logger.setReadOnly(True)  # Make it read-only
+        self._logger.setStyleSheet("background-color: gray; color: lightgreen;")
+        self._logger.setReadOnly(True)  # Make it read-only
         self._logger.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOn)
         self._output_frame_layout.addWidget(self._logger)
 

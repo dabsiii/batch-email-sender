@@ -27,6 +27,7 @@ class EmailBot:
         self.connected = Event_()
         self.connecting_failed = Event_()
         self.email_sent = Event_()
+        self._sending_failed = Event_()
 
     def connect(self) -> None:
         """Establishes a connection to the SMTP server."""
@@ -105,4 +106,5 @@ class EmailBot:
 
         except Exception as e:
             print(f"Failed to send email: {e}")
+            self._sending_failed.publish({"recipient": recipient})
             raise

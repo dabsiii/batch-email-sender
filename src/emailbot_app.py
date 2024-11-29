@@ -12,7 +12,7 @@ from src.model.email_bot import EmailBot
 class EmailBotApp:
     def __init__(self):
         self._email_sending_thread = threading.Thread(
-            target=lambda: self._on_send_email_click(0)
+            target=lambda: self._send_batch_emails(0)
         )
 
         self._variables: List = None
@@ -65,7 +65,7 @@ class EmailBotApp:
 
         self._check_ready()
 
-    def _on_send_email_click(self, data) -> None:
+    def _send_batch_emails(self, data) -> None:
         credentials = self._credentials
         data = self._data
         attachment_folder_path = self._attachment_folder_path
@@ -73,7 +73,7 @@ class EmailBotApp:
         username = credentials.get_username()
         password = credentials.get_password()
         email_bot = EmailBot(username, password)
-        email_bot.email_sent.subscribe(self._log)
+        email_bot.email_sent.subscribe(self._log_email_sent)
 
         try:
             email_bot.connect()
@@ -96,6 +96,7 @@ class EmailBotApp:
                     is_html=True,
                     attachments=[attachment],  # Update paths
                 )
+            self._gui.log("Task Finished ...")
         finally:
             email_bot.disconnect()
 
@@ -119,8 +120,10 @@ class EmailBotApp:
         else:
             self._not_ready.publish(True)
 
-    def _log(self, data) -> None:
-        print("logging ")
+    def _log_email_sent(self, data) -> None:
         recipient = data["recipient"]
         message = f"Email succesfuly sent to {recipient}"
         self._gui.log(message)
+
+    def _log_finished(self, data):
+        self._gui.log("Task Finished ...")
