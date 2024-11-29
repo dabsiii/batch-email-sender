@@ -4,7 +4,7 @@ from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QFont
 
 # from PyQt5.QtGui import QColor, QFont, QTextCharFormat, QTextCursor
-from PyQt5.QtWidgets import QLineEdit, QSizePolicy, QTextEdit, QVBoxLayout, QWidget
+from PyQt5.QtWidgets import QLabel, QLineEdit, QSizePolicy, QVBoxLayout, QWidget
 
 from src.gui.email_editor.email_body.email_body_c1 import EmailBodyC1
 from src.gui.email_editor.email_editor import EmailEditor
@@ -14,6 +14,7 @@ from src.gui.email_editor.variable_lister.variable_lister import VariableLister
 
 class EmailEditorC1(EmailEditor):
     """
+    i. Title
     A. Subject
     B. Toolbar
     C. Body
@@ -31,6 +32,12 @@ class EmailEditorC1(EmailEditor):
         self._layout.setSpacing(0)
         self.widget.setLayout(self._layout)
 
+        # i title
+        self._title_label = QLabel(text="Edit Email Message")
+        self._title_label.setStyleSheet(
+            "QLabel { font-size: 12px; font-weight: bold; }"
+        )
+        self._layout.addWidget(self._title_label)
         # A. Subject
         self._subject_edit = QLineEdit()
         font = QFont("Arial", 10)

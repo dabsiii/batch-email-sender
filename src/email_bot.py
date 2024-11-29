@@ -6,6 +6,8 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from typing import List, Optional
 
+from src.event.event_ import Event_
+
 
 class EmailBot:
     def __init__(
@@ -21,15 +23,24 @@ class EmailBot:
         self.password: str = password
         self.server: Optional[smtplib.SMTP] = None
 
+        # Events
+        self.connected = Event_()
+        self.connecting_failed = Event_()
+        self.email_sent = Event_()
+
     def connect(self) -> None:
         """Establishes a connection to the SMTP server."""
         try:
             self.server = smtplib.SMTP(self.smtp_server, self.smtp_port)
             self.server.starttls()
             self.server.login(self.username, self.password)
-            print("Successfully connected to the SMTP server.")
+            self.connected.publish(
+                {"username": self.username, "password": self.password}
+            )
         except Exception as e:
-            print(f"Failed to connect to the SMTP server: {e}")
+            self.connecting_failed.publish(
+                {"username": self.username, "password": self.password}
+            )
             raise
 
     def disconnect(self) -> None:
@@ -87,9 +98,11 @@ class EmailBot:
             # Send the email
             if self.server:
                 self.server.send_message(msg)
+                self.email_sent.publish({"recipient": recipient})
                 print(f"Email sent successfully to {recipient}.")
             else:
                 print("SMTP server connection is not established.")
+
         except Exception as e:
             print(f"Failed to send email: {e}")
             raise

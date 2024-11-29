@@ -13,6 +13,8 @@ from PyQt5.QtWidgets import (
     QWidget,
 )
 
+from src.event.event import Event
+from src.event.event_ import Event_
 from src.gui.email_bot_gui import EmailBotGui
 from src.gui.email_editor.email_editor_c1 import EmailEditorC1
 from src.gui.selector.file_selector import FileSelector
@@ -33,7 +35,36 @@ class EmailBotGuiC1(EmailBotGui):
     """
 
     def __init__(self):
-        pass
+        self._selected_credentials = Event_()
+        self._selected_data = Event_()
+        self._selected_folder = Event_()
+
+    def show(self) -> None:
+        app = QApplication(sys.argv)
+        self._init_gui()
+        self._widget.show()
+        sys.exit(app.exec_())
+
+    @property
+    def selected_credentials(self) -> Event:
+        return self._selected_credentials
+
+    @property
+    def selected_data(self) -> Event:
+        return self._selected_data
+
+    @property
+    def selected_folder(self) -> Event:
+        return self._selected_folder
+
+    @property
+    def send_email_clicked(self) -> Event: ...
+
+    def get_credentials_path(self) -> Path: ...
+
+    def get_data_path(self) -> Path: ...
+
+    def get_attachment_folder_path(self) -> Path: ...
 
     def _init_gui(self) -> None:
         self._widget = QWidget()
@@ -68,7 +99,7 @@ class EmailBotGuiC1(EmailBotGui):
 
         # A.1 Credentials
         self._credential_selector = FileSelector(
-            info_text="Import Credentials (.json file)",
+            info_text="Import Sender Credentials (.json file)",
             icon_path=Path("assets\\json-icon.png").resolve(),
             filter="JSON Files (*.json);;All Files (*)",
         )
@@ -78,7 +109,7 @@ class EmailBotGuiC1(EmailBotGui):
 
         # A.2 Data
         self._data_selector = FileSelector(
-            info_text="Select a data file (.xlsx file)",
+            info_text="Select Data File (.xlsx file)",
             icon_path=Path("assets\\xlsx-icon.png").resolve(),
             filter="Excel Files (*.xls *.xlsx);;All Files (*)",
         )
@@ -88,7 +119,7 @@ class EmailBotGuiC1(EmailBotGui):
 
         # 3 Attachment Folder
         self._attachment_folder_selector = FolderSelector(
-            info_text="Select a Folder containing the attachment",
+            info_text="Select Attachments Folder",
             icon_path=Path("assets\\folder-icon.jpg").resolve(),
         )
         self._selectors_frame_layout.addWidget(
@@ -110,9 +141,3 @@ class EmailBotGuiC1(EmailBotGui):
 
         self._send_email_button = QPushButton(text="send email")
         self._output_frame_layout.addWidget(self._send_email_button)
-
-    def show(self) -> None:
-        app = QApplication(sys.argv)
-        self._init_gui()
-        self._widget.show()
-        sys.exit(app.exec_())

@@ -1,14 +1,15 @@
 from typing import List
-from PyQt5.QtWidgets import (
-    QWidget,
-    QVBoxLayout,
-    QGridLayout,
-    QPushButton,
-    QLabel,
-    QFrame,
-    QSizePolicy,
-)
+
 from PyQt5.QtCore import Qt
+from PyQt5.QtWidgets import (
+    QFrame,
+    QGridLayout,
+    QLabel,
+    QPushButton,
+    QSizePolicy,
+    QVBoxLayout,
+    QWidget,
+)
 
 
 class VariableLister:
@@ -19,6 +20,7 @@ class VariableLister:
     def _init_ui(self):
         # Set minimum height for the widget
         self.widget.setMinimumHeight(200)
+        self.widget.setStyleSheet("background-color: pink;")
 
         # Main layout for the widget
         self._main_layout = QVBoxLayout()
@@ -48,7 +50,9 @@ class VariableLister:
         # Grid layout to display variables
         self._grid_layout = QGridLayout()
         self._grid_layout.setSpacing(5)
-        self._grid_layout.setContentsMargins(0, 0, 0, 0)  # Remove margins for compactness
+        self._grid_layout.setContentsMargins(
+            0, 0, 0, 0
+        )  # Remove margins for compactness
         self._frame_layout.addLayout(self._grid_layout)
 
         # Spacer to push the grid layout to the top
