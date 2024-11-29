@@ -1,5 +1,6 @@
 import sys
 from pathlib import Path
+from typing import List
 
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import (
@@ -38,33 +39,7 @@ class EmailBotGuiC1(EmailBotGui):
         self._selected_credentials = Event_()
         self._selected_data = Event_()
         self._selected_folder = Event_()
-
-    def show(self) -> None:
-        app = QApplication(sys.argv)
-        self._init_gui()
-        self._widget.show()
-        sys.exit(app.exec_())
-
-    @property
-    def selected_credentials(self) -> Event:
-        return self._selected_credentials
-
-    @property
-    def selected_data(self) -> Event:
-        return self._selected_data
-
-    @property
-    def selected_folder(self) -> Event:
-        return self._selected_folder
-
-    @property
-    def send_email_clicked(self) -> Event: ...
-
-    def get_credentials_path(self) -> Path: ...
-
-    def get_data_path(self) -> Path: ...
-
-    def get_attachment_folder_path(self) -> Path: ...
+        self._send_email_clicked = Event_()
 
     def _init_gui(self) -> None:
         self._widget = QWidget()
@@ -103,6 +78,7 @@ class EmailBotGuiC1(EmailBotGui):
             icon_path=Path("assets\\json-icon.png").resolve(),
             filter="JSON Files (*.json);;All Files (*)",
         )
+        self._credential_selector.selected
         self._selectors_frame_layout.addWidget(
             self._credential_selector.widget, stretch=0, alignment=Qt.AlignHCenter
         )
@@ -140,4 +116,51 @@ class EmailBotGuiC1(EmailBotGui):
         self._widget_layout.addWidget(self._output_frame)
 
         self._send_email_button = QPushButton(text="send email")
+        self._send_email_button.clicked.connect(self._send_email_clicked.publish)
         self._output_frame_layout.addWidget(self._send_email_button)
+
+        self._handle_events()
+
+    def _handle_events(self) -> None:
+        self._credential_selector.selected.subscribe(self._selected_credentials.publish)
+        self._data_selector.selected.subscribe(self._selected_data.publish)
+        self._attachment_folder_selector.selected.subscribe(
+            self._selected_folder.publish
+        )
+
+    def show(self) -> None:
+        app = QApplication(sys.argv)
+        self._init_gui()
+        self._widget.show()
+        sys.exit(app.exec_())
+
+    @property
+    def selected_credentials(self) -> Event:
+        return self._selected_credentials
+
+    @property
+    def selected_data(self) -> Event:
+        return self._selected_data
+
+    @property
+    def selected_folder(self) -> Event:
+        return self._selected_folder
+
+    @property
+    def send_email_clicked(self) -> Event:
+        return self._send_email_clicked
+
+    def get_credentials_path(self) -> Path:
+        return self._credential_selector.get_path()
+
+    def get_data_path(self) -> Path:
+        return self._data_selector.get_path()
+
+    def get_attachment_folder_path(self) -> Path:
+        return self._attachment_folder_selector.get_path()
+
+    def update_variables(self, variables: List[str]) -> None:
+        self._email_editor.set_variables(variables)
+
+    def get_email_body_html(self) -> str:
+        return self._email_editor.get_body_html()

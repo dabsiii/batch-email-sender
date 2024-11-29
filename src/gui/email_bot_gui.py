@@ -1,5 +1,6 @@
 from abc import ABC, abstractmethod
 from pathlib import Path
+from typing import List
 
 from src.event.event import Event
 
@@ -28,3 +29,9 @@ class EmailBotGui(ABC):
 
     @abstractmethod
     def get_attachment_folder_path(self) -> Path: ...
+
+    @abstractmethod
+    def update_variables(self, variables: List[str]) -> None: ...
+
+    @abstractmethod
+    def get_email_body_html(self) -> str: ...
