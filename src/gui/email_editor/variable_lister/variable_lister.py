@@ -71,10 +71,11 @@ class VariableLister:
         for i, variable in enumerate(variables):
             row, col = divmod(i, 3)  # Adjust number of columns for compactness
             button = QPushButton(variable)
+            # button.setStyleSheet(" ")
             button.setSizePolicy(QSizePolicy.Minimum, QSizePolicy.Minimum)
             button.setMinimumSize(80, 30)  # Set a minimum size for each button
             button.setStyleSheet(
-                "QPushButton { padding: 2px; border: 1px solid #ccc; border-radius: 3px; }"
+                "QPushButton { padding: 2px; border: 1px solid #ccc; border-radius: 3px;background-color: lightblue ; }"
             )
             self._grid_layout.addWidget(button, row, col)
 
