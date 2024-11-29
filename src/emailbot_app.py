@@ -23,7 +23,6 @@ class EmailBotApp:
         self._gui.selected_data.subscribe(self._read_data)
         self._gui.selected_folder.subscribe(self._read_attachment_folder)
         self._gui.send_email_clicked.subscribe(self._on_send_email_click)
-        
 
         self._ready.subscribe(lambda e: self._gui.enable_send_email())
         self._not_ready.subscribe(lambda e: self._gui.disable_send_email())
@@ -36,21 +35,27 @@ class EmailBotApp:
 
     def _read_credentials(self, data) -> None:
         credentials_path = self._gui.get_credentials_path()
-        self._credentials = Credentials(credentials_path)
-        username = self._credentials.get_username()
-        password = self._credentials.get_password()
-        self._email_bot = EmailBot(username, password)
+        if credentials_path is not None:
+            self._credentials = Credentials(credentials_path)
+            username = self._credentials.get_username()
+            password = self._credentials.get_password()
+            self._email_bot = EmailBot(username, password)
         self._check_ready()
 
     def _read_data(self, data) -> None:
         data_file_path = self._gui.get_data_path()
-        self._data = Data(data_file_path)
-        self._variables = self._data.get_columns()
-        self._gui.update_variables(self._variables)
+        if data_file_path is not None:
+            self._data = Data(data_file_path)
+            self._variables = self._data.get_columns()
+            self._gui.update_variables(self._variables)
         self._check_ready()
 
     def _read_attachment_folder(self, data) -> None:
-        self._attachment_folder_path = self._gui.get_attachment_folder_path()
+        attachment_folder_path = self._gui.get_attachment_folder_path()
+
+        if attachment_folder_path is not None:
+            self._attachment_folder_path = attachment_folder_path
+
         self._check_ready()
 
     def _on_send_email_click(self, data) -> None:
