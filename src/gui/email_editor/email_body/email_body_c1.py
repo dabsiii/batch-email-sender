@@ -1,11 +1,13 @@
 from PyQt5.QtCore import QEvent, QObject, pyqtSignal
 from PyQt5.QtGui import QFont, QKeyEvent, QTextCharFormat, QTextCursor
-from PyQt5.QtWidgets import QApplication, QTextEdit, QVBoxLayout, QWidget
+from PyQt5.QtWidgets import QApplication, QSizePolicy, QTextEdit, QVBoxLayout, QWidget
 
 
 class EmailBodyC1:
     def __init__(self):
         self.widget = QTextEdit()
+        self.widget.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        self.widget.setMinimumHeight(300)
 
         self._text_edit = self.widget
 
