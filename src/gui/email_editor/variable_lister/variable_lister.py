@@ -20,7 +20,7 @@ class VariableLister:
     def _init_ui(self):
         # Set minimum height for the widget
         self.widget.setMinimumHeight(200)
-        self.widget.setStyleSheet("background-color: pink;")
+        # self.widget.setStyleSheet("background-color: pink;")
 
         # Main layout for the widget
         self._main_layout = QVBoxLayout()
