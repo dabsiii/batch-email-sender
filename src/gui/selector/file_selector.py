@@ -11,6 +11,8 @@ from PyQt5.QtWidgets import (
     QWidget,
 )
 
+from src.event.event import Event
+from src.event.event_ import Event_
 from src.gui.selector.selection_display.selection_display_c1 import SelectionDisplayC1
 from src.gui.selector.selector import Selector
 
@@ -38,20 +40,23 @@ class FileSelector(Selector):
         dialog_caption: str = "Select A File",
     ):
 
-        self.widget = QWidget()
-        #self.widget.setStyleSheet("background-color: lightblue;")
-        self.widget.setMinimumSize(300, 200)
         self._info_text = info_text
         self._icon_path = icon_path
         self._filter = filter
         self._button_text = button_text
         self._path: Path = None
         self._dialog_caption: str = dialog_caption
+        self._selected = Event_()
+
         self._init_ui()
 
     def _init_ui(self):
+        self.widget = QWidget()
+        # self.widget.setStyleSheet("background-color: lightblue;")
+        self.widget.setMinimumSize(300, 200)
+
         self._frame = QFrame(parent=self.widget)
-        #self._frame.setStyleSheet("QFrame {background-color: yellow;}")
+        # self._frame.setStyleSheet("QFrame {background-color: yellow;}")
         self._frame.setFrameShape(QFrame.StyledPanel)
         self._frame.setFixedSize(250, 120)
 
@@ -80,10 +85,12 @@ class FileSelector(Selector):
         self._select_file_button.clicked.connect(self._open_file_dialog)
         self._frame_layout.addWidget(self._select_file_button)
 
-    def selected(self) -> pyqtSignal: ...
+    @property
+    def selected(self) -> Event:
+        return self._selected
 
     def get_path(self) -> Path:
-        return self._path()
+        return self._path
 
     def _open_file_dialog(self):
         # Open file dialog and get selected file path
@@ -98,6 +105,7 @@ class FileSelector(Selector):
             self._selection_display.show_selection(
                 path=Path(file_path), iconpath=self._icon_path
             )
+            self._selected.publish({"path": self._path})
 
         else:
             self._path = None

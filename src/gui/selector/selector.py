@@ -3,10 +3,12 @@ from pathlib import Path
 
 from PyQt5.QtCore import pyqtSignal
 
+from src.event.event import Event
+
 
 class Selector(ABC):
     @abstractmethod
-    def selected() -> pyqtSignal: ...
+    def selected() -> Event: ...
 
     @abstractmethod
-    def get_path() -> Path: ...
+    def get_path() -> Event: ...
