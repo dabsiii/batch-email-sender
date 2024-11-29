@@ -40,6 +40,7 @@ class EmailBotGuiC1(EmailBotGui):
         self._selected_data = Event_()
         self._selected_folder = Event_()
         self._send_email_clicked = Event_()
+    
 
     def _init_gui(self) -> None:
         self._widget = QWidget()
@@ -181,3 +182,5 @@ class EmailBotGuiC1(EmailBotGui):
     def enable_send_email(self) -> str:
         self._send_email_button.setEnabled(True)
         self._send_email_button.setStyleSheet("background-color: blue;")
+
+
