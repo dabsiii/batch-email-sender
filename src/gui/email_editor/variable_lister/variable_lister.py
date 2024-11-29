@@ -60,6 +60,7 @@ class VariableLister:
 
     def set_variables(self, variables: List[str]) -> None:
         """Populate the grid with labels or buttons for each variable."""
+
         # Clear existing widgets in the grid layout
         while self._grid_layout.count():
             child = self._grid_layout.takeAt(0)
