@@ -45,7 +45,6 @@ class FolderSelector(Selector):
         self._path: Path = None
         self._dialog_caption = dialog_caption
         self._selected = Event_()
-       
 
         self._init_ui()
 
@@ -84,9 +83,6 @@ class FolderSelector(Selector):
     @property
     def selected(self) -> Event:
         return self._selected
-    
-
-
 
     def get_path(self) -> Path:
         return self._path
@@ -102,8 +98,7 @@ class FolderSelector(Selector):
             self._selection_display.show_selection(
                 path=Path(directory), iconpath=self._icon_path
             )
-            self._selected.publish({"path": self._path})
         else:
             self._path = None
             self._selection_display.show_no_selection()
-          
+        self._selected.publish({"path": self._path})

@@ -105,8 +105,9 @@ class FileSelector(Selector):
             self._selection_display.show_selection(
                 path=Path(file_path), iconpath=self._icon_path
             )
-            self._selected.publish({"path": self._path})
 
         else:
             self._path = None
             self._selection_display.show_no_selection()
+
+        self._selected.publish({"path": self._path})
