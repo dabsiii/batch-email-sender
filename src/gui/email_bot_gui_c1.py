@@ -3,7 +3,7 @@ from pathlib import Path
 from typing import List
 
 from PyQt5.QtCore import Qt
-from PyQt5.QtGui import QIcon
+from PyQt5.QtGui import QIcon, QTextCursor
 from PyQt5.QtWidgets import (
     QApplication,
     QFrame,
@@ -46,7 +46,7 @@ class EmailBotGuiC1(EmailBotGui):
 
     def _init_gui(self) -> None:
         self._widget = QWidget()
-        self._widget.setWindowTitle("PS Batch Email Sender V1.0")
+        self._widget.setWindowTitle("PS Batch Email Sender V1.0.1")
         logo_path = Path("assets\\app-logo.ico").resolve()
         self._widget.setWindowIcon(QIcon(logo_path.as_posix()))
         self._widget.setMinimumSize(1000, 400)
@@ -196,3 +196,4 @@ class EmailBotGuiC1(EmailBotGui):
 
     def log(self, message: str) -> None:
         self._logger.append(message)
+        self._logger.moveCursor(QTextCursor.End)

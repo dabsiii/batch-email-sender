@@ -46,6 +46,7 @@ class EmailBotApp:
             username = self._credentials.get_username()
             password = self._credentials.get_password()
             self._email_bot = EmailBot(username, password)
+            self._log_sender_info(username)
 
         self._check_ready()
 
@@ -66,6 +67,7 @@ class EmailBotApp:
         self._check_ready()
 
     def _send_batch_emails(self, data) -> None:
+        self._log_sending_email()
         credentials = self._credentials
         data = self._data
         attachment_folder_path = self._attachment_folder_path
@@ -122,8 +124,15 @@ class EmailBotApp:
 
     def _log_email_sent(self, data) -> None:
         recipient = data["recipient"]
-        message = f"Email succesfuly sent to {recipient}"
+        attachment = data["attachment"]
+        message = f"Email succesfuly sent to {recipient} [attachment: {attachment}]"
         self._gui.log(message)
 
     def _log_finished(self, data):
         self._gui.log("Task Finished ...")
+
+    def _log_sending_email(self) -> None:
+        self._gui.log("Sending emails, please wait ...")
+
+    def _log_sender_info(self, username: str) -> None:
+        self._gui.log(f"Sender Username: {username}")

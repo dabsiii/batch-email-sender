@@ -99,7 +99,9 @@ class EmailBot:
             # Send the email
             if self.server:
                 self.server.send_message(msg)
-                self.email_sent.publish({"recipient": recipient})
+                self.email_sent.publish(
+                    {"recipient": recipient, "attachment": os.path.basename(file_path)}
+                )
                 print(f"Email sent successfully to {recipient}. published email sent")
             else:
                 print("SMTP server connection is not established.")
