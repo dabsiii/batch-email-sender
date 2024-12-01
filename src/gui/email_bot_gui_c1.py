@@ -43,7 +43,8 @@ class EmailBotGuiC1(EmailBotGui):
         D. Logger
     """
 
-    def __init__(self):
+    def __init__(self, version: str = ""):
+        self._version = version
         self._selected_credentials = Event_()
         self._selected_data = Event_()
         self._selected_folder = Event_()
@@ -53,7 +54,7 @@ class EmailBotGuiC1(EmailBotGui):
 
     def _init_gui(self) -> None:
         self._widget = QWidget()
-        self._widget.setWindowTitle("PS Batch Email Sender V1.0.1")
+        self._widget.setWindowTitle(f"PS Batch Email Sender {self._version}")
         logo_path = ":/images/icons/app-logo.ico"
         self._widget.setWindowIcon(QIcon(logo_path))
         self._widget.setMinimumSize(1000, 800)

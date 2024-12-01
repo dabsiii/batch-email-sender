@@ -10,7 +10,7 @@ from src.model.email_bot import EmailBot
 
 
 class EmailBotApp:
-    def __init__(self):
+    def __init__(self, version: str = ""):
         self._email_sending_thread = threading.Thread(
             target=lambda: self._send_batch_emails(0)
         )
@@ -22,7 +22,7 @@ class EmailBotApp:
         self._email_bot: EmailBot = None
         self._ready = Event_()
         self._not_ready = Event_()
-        self._gui = EmailBotGuiC1()
+        self._gui = EmailBotGuiC1(version)
         self._gui.selected_credentials.subscribe(self._read_credentials)
         self._gui.selected_data.subscribe(self._read_data)
         self._gui.selected_folder.subscribe(self._read_attachment_folder)
