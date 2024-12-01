@@ -3,6 +3,6 @@ dropdown to select email column
 
 error handlings
 -connection error
--datafile and attachments mismatch errors
+-datafile and attachments mismatch errors (filenames and number)
 
 allow interuptions

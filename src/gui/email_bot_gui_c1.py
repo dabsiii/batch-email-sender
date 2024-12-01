@@ -6,11 +6,11 @@ from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QIcon, QTextCursor
 from PyQt5.QtWidgets import (
     QApplication,
+    QComboBox,
+    QFormLayout,
     QFrame,
     QHBoxLayout,
     QPushButton,
-    QSizePolicy,
-    QSpacerItem,
     QTextEdit,
     QVBoxLayout,
     QWidget,
@@ -34,9 +34,12 @@ class EmailBotGuiC1(EmailBotGui):
             A.3 Attachment folder
         B. Gmail Editor
         C. Send Email
+    DROPDOWNS
+        A. Email column
+        B. Attachment column
     OUTPUTS FRAME
-        D. Logger
         E. SEND EMAIL
+        D. Logger
     """
 
     def __init__(self):
@@ -50,7 +53,7 @@ class EmailBotGuiC1(EmailBotGui):
         self._widget.setWindowTitle("PS Batch Email Sender V1.0.1")
         logo_path = ":/images/icons/app-logo.ico"
         self._widget.setWindowIcon(QIcon(logo_path))
-        self._widget.setMinimumSize(1000, 400)
+        self._widget.setMinimumSize(1000, 800)
         self._widget_layout = QVBoxLayout()
         self._widget.setLayout(self._widget_layout)
 
@@ -114,6 +117,23 @@ class EmailBotGuiC1(EmailBotGui):
         # B. Gmail Editor
         self._email_editor = EmailEditorC1()
         self._input_frame_layout.addWidget(self._email_editor.widget)
+
+        # DROPDOWNS
+        self._dropdowns_container = QWidget()
+        dropdown_layout = QFormLayout()
+        self._dropdowns_container.setLayout(dropdown_layout)
+
+        # Email Column
+        self._email_column_menu = QComboBox()
+        self._email_column_menu.addItems([])
+        dropdown_layout.addRow("Email Address Column:", self._email_column_menu)
+        self._widget_layout.addWidget(self._dropdowns_container)
+
+        # Email Column
+        self._Attachments_column_menu = QComboBox()
+        self._Attachments_column_menu.addItems([])
+        dropdown_layout.addRow("Attachments Column:", self._Attachments_column_menu)
+        self._widget_layout.addWidget(self._dropdowns_container)
 
         # OUTPUTS FRAME
         self._output_frame = QFrame()
