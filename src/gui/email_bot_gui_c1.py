@@ -47,6 +47,8 @@ class EmailBotGuiC1(EmailBotGui):
         self._selected_data = Event_()
         self._selected_folder = Event_()
         self._send_email_clicked = Event_()
+        self._selected_email_column = Event_()
+        self._selected_attachments_column = Event_()
 
     def _init_gui(self) -> None:
         self._widget = QWidget()
@@ -123,17 +125,27 @@ class EmailBotGuiC1(EmailBotGui):
         dropdown_layout = QFormLayout()
         self._dropdowns_container.setLayout(dropdown_layout)
 
-        # Email Column
+        # Email Column dropdown
         self._email_column_menu = QComboBox()
-        self._email_column_menu.addItems([])
+        self._email_column_menu.setMinimumWidth(200)
+        self._email_column_menu.currentIndexChanged.connect(
+            self._selected_email_column.publish
+        )
         dropdown_layout.addRow("Email Address Column:", self._email_column_menu)
-        self._widget_layout.addWidget(self._dropdowns_container)
+        self._widget_layout.addWidget(
+            self._dropdowns_container, alignment=Qt.AlignHCenter
+        )
 
-        # Email Column
-        self._Attachments_column_menu = QComboBox()
-        self._Attachments_column_menu.addItems([])
-        dropdown_layout.addRow("Attachments Column:", self._Attachments_column_menu)
-        self._widget_layout.addWidget(self._dropdowns_container)
+        # Email Column dropdown
+        self._attachments_column_menu = QComboBox()
+        self._attachments_column_menu.setMinimumWidth(200)
+        self._attachments_column_menu.currentIndexChanged.connect(
+            self._selected_attachments_column.publish
+        )
+        dropdown_layout.addRow("Attachments Column:", self._attachments_column_menu)
+        self._widget_layout.addWidget(
+            self._dropdowns_container, alignment=Qt.AlignHCenter
+        )
 
         # OUTPUTS FRAME
         self._output_frame = QFrame()
@@ -189,6 +201,14 @@ class EmailBotGuiC1(EmailBotGui):
     def send_email_clicked(self) -> Event:
         return self._send_email_clicked
 
+    @property
+    def selected_email_column(self) -> Event:
+        return self._selected_email_column
+
+    @property
+    def selected_attachments_column(self) -> Event:
+        return self._selected_attachments_column
+
     def get_credentials_path(self) -> Path:
         return self._credential_selector.get_path()
 
@@ -214,6 +234,20 @@ class EmailBotGuiC1(EmailBotGui):
     def enable_send_email(self) -> str:
         self._send_email_button.setEnabled(True)
         self._send_email_button.setStyleSheet("background-color: blue;")
+
+    def set_email_columns_options(self, options: List[str]) -> None:
+        self._email_column_menu.clear()
+        self._email_column_menu.addItems(options)
+
+    def set_attachments_columns_options(self, options: List[str]) -> None:
+        self._attachments_column_menu.clear()
+        self._attachments_column_menu.addItems(options)
+
+    def get_email_column(self) -> str:
+        return self._email_column_menu.currentText()
+
+    def get_attachments_column(self) -> str:
+        return self._attachments_column_menu.currentText()
 
     def log(self, message: str) -> None:
         self._logger.append(message)
