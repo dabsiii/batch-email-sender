@@ -5,11 +5,51 @@ from PyQt5.QtWidgets import (
     QFrame,
     QGridLayout,
     QLabel,
+    QMessageBox,
     QPushButton,
     QSizePolicy,
     QVBoxLayout,
     QWidget,
 )
+
+MESSAGE = """
+
+You can personalize your email content by using variables enclosed in curly braces {}. 
+Each variable corresponds to a column in your data file, 
+and its value will change based on the record being processed.
+
+Guidelines:
+Variable Names: Ensure the variable names (inside {}) exactly match the column headers in your data file (case-sensitive).
+
+Placeholder Usage:
+Use {ColumnName} wherever you want the corresponding value to appear in the email.
+
+Example:
+If your data file looks like this:
+
+Name    |Email                             |Greeting
+---------------------------------------
+Alice      | alice@example.com    | Hello Alice
+Bob        | bob@example.com     | Hello Bob
+
+You can write your email template as:
+
+Subject: Welcome, {Name}!
+Body: Hi {Name}, your message is: {Greeting}.
+The placeholders (e.g., {Name}, {Greeting}) will automatically be replaced with the corresponding values from your data file for each recipient.
+
+Output:
+
+For Alice:
+Subject: Welcome, Alice!
+Body: Hi Alice, your message is: Hello Alice. 
+
+For Bob:
+Subject: Welcome, Bob!
+Body: Hi Bob, your message is: Hello Bob.
+
+
+"""
 
 
 class VariableLister:
@@ -45,6 +85,8 @@ class VariableLister:
             "QLabel { font-size: 12px; font-weight: bold; }"
         )
         self._title_label.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
+        self._title_label.setCursor(Qt.PointingHandCursor)  # Change cursor to hand
+        self._title_label.mousePressEvent = self._on_title_label_clicked
         self._frame_layout.addWidget(self._title_label, alignment=Qt.AlignTop)
 
         # Grid layout to display variables
@@ -79,13 +121,10 @@ class VariableLister:
             )
             self._grid_layout.addWidget(button, row, col)
 
-
-# Example usage
-if __name__ == "__main__":
-    from PyQt5.QtWidgets import QApplication
-
-    app = QApplication([])
-    lister = VariableLister()
-    lister.set_variables(["Variable 1", "Variable 2", "Variable 3", "Variable 4"])
-    lister.widget.show()
-    app.exec_()
+    def _on_title_label_clicked(self, event):
+        msg_box = QMessageBox()
+        msg_box.setWindowTitle("How to Use Variables")
+        msg_box.setText(MESSAGE)
+        msg_box.setIcon(QMessageBox.Information)
+        msg_box.setStandardButtons(QMessageBox.Ok | QMessageBox.Cancel)
+        msg_box.exec_()

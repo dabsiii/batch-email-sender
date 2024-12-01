@@ -23,6 +23,7 @@ from src.gui.email_bot_gui import EmailBotGui
 from src.gui.email_editor.email_editor_c1 import EmailEditorC1
 from src.gui.selector.file_selector import FileSelector
 from src.gui.selector.folder_selector import FolderSelector
+from src.gui.toolbar.toolbar import ToolBar
 
 
 class EmailBotGuiC1(EmailBotGui):
@@ -58,6 +59,10 @@ class EmailBotGuiC1(EmailBotGui):
         self._widget.setMinimumSize(1000, 800)
         self._widget_layout = QVBoxLayout()
         self._widget.setLayout(self._widget_layout)
+
+        # Toolbar
+        self._tool_bar = ToolBar()
+        self._widget_layout.addWidget(self._tool_bar.widget)
 
         # INPUTS FRAME
         self._input_frame = QFrame()
