@@ -220,6 +220,8 @@ class EmailBotGuiC1(EmailBotGui):
 
     def update_variables(self, variables: List[str]) -> None:
         self._email_editor.set_variables(variables)
+        self._set_email_columns_options(variables)
+        self._set_attachments_columns_options(variables)
 
     def get_email_body_html(self) -> str:
         return self._email_editor.get_body_html()
@@ -235,13 +237,15 @@ class EmailBotGuiC1(EmailBotGui):
         self._send_email_button.setEnabled(True)
         self._send_email_button.setStyleSheet("background-color: blue;")
 
-    def set_email_columns_options(self, options: List[str]) -> None:
+    def _set_email_columns_options(self, options: List[str]) -> None:
         self._email_column_menu.clear()
         self._email_column_menu.addItems(options)
+        self._email_column_menu.setCurrentIndex(-1)
 
-    def set_attachments_columns_options(self, options: List[str]) -> None:
+    def _set_attachments_columns_options(self, options: List[str]) -> None:
         self._attachments_column_menu.clear()
         self._attachments_column_menu.addItems(options)
+        self._attachments_column_menu.setCurrentIndex(-1)
 
     def get_email_column(self) -> str:
         return self._email_column_menu.currentText()
