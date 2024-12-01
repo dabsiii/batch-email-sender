@@ -68,7 +68,7 @@ class EmailBotGuiC1(EmailBotGui):
         self._input_frame = QFrame()
 
         # self._input_frame.setStyleSheet("QFrame {background-color: red;}")
-        self._input_frame.setFixedHeight(600)
+        # self._input_frame.setFixedHeight(600)
         self._input_frame_layout = QHBoxLayout()
         self._input_frame_layout.setContentsMargins(0, 0, 0, 0)
 
@@ -132,26 +132,28 @@ class EmailBotGuiC1(EmailBotGui):
 
         # Email Column dropdown
         self._email_column_menu = QComboBox()
-        self._email_column_menu.setMinimumWidth(200)
+        self._email_column_menu.setMinimumWidth(100)
         self._email_column_menu.setCursor(Qt.OpenHandCursor)
         self._email_column_menu.currentIndexChanged.connect(
             self._selected_email_column.publish
         )
         dropdown_layout.addRow("Email Address Column:", self._email_column_menu)
-        self._widget_layout.addWidget(
-            self._dropdowns_container, alignment=Qt.AlignHCenter
+        self._selectors_frame_layout.addWidget(
+            self._dropdowns_container,
+            # alignment=Qt.AlignHCenter
         )
 
         # Email Column dropdown
         self._attachments_column_menu = QComboBox()
-        self._attachments_column_menu.setMinimumWidth(200)
+        self._attachments_column_menu.setMinimumWidth(100)
         self._attachments_column_menu.setCursor(Qt.OpenHandCursor)
         self._attachments_column_menu.currentIndexChanged.connect(
             self._selected_attachments_column.publish
         )
         dropdown_layout.addRow("Attachments Column:", self._attachments_column_menu)
-        self._widget_layout.addWidget(
-            self._dropdowns_container, alignment=Qt.AlignHCenter
+        self._selectors_frame_layout.addWidget(
+            self._dropdowns_container,
+            # alignment=Qt.AlignHCenter
         )
 
         # OUTPUTS FRAME

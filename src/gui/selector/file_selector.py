@@ -11,12 +11,13 @@ from PyQt5.QtWidgets import (
     QWidget,
 )
 
+import src.resources_rc
 from src.event.event import Event
 from src.event.event_ import Event_
 from src.gui.selector.selection_display.selection_display_c1 import SelectionDisplayC1
 from src.gui.selector.selector import Selector
 
-import src.resources_rc
+
 class FileSelector(Selector):
     """
     1. INFO TEX
@@ -52,25 +53,21 @@ class FileSelector(Selector):
 
     def _init_ui(self):
         self.widget = QWidget()
-        # self.widget.setStyleSheet("background-color: lightblue;")
+        self._widget_layout = QVBoxLayout()
+        self.widget.setLayout(self._widget_layout)
         self.widget.setMinimumSize(300, 200)
 
-        self._frame = QFrame(parent=self.widget)
-        # self._frame.setStyleSheet("QFrame {background-color: yellow;}")
+        self._frame = QFrame()
         self._frame.setFrameShape(QFrame.StyledPanel)
         self._frame.setFixedSize(250, 120)
 
         self._frame_layout = QVBoxLayout()
         self._frame_layout.setSpacing(0)
-        # self._frame_layout.setContentsMargins(0, 0, 0, 0)
-        self._frame_layout.setAlignment(Qt.AlignTop)
         self._frame.setLayout(self._frame_layout)
+        self._widget_layout.addWidget(self._frame, alignment=Qt.AlignHCenter)
 
         # 1
         self._info_label = QLabel(text=self._info_text)
-        # self._info_label.setStyleSheet(
-        #     """QLabel {padding: 0px;margin: 0px; color: red; background-color: darkgreen;}"""
-        # )
         self._frame_layout.addWidget(self._info_label)
         # 2
         self._selection_display = SelectionDisplayC1()
@@ -93,7 +90,6 @@ class FileSelector(Selector):
         return self._path
 
     def _open_file_dialog(self):
-        # Open file dialog and get selected file path
         file_path, _ = QFileDialog.getOpenFileName(
             parent=self.widget,
             caption=self._dialog_caption,

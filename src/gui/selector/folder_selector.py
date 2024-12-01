@@ -51,21 +51,21 @@ class FolderSelector(Selector):
     def _init_ui(self):
         self.widget = QWidget()
         self.widget.setMinimumSize(300, 200)
+        self._widget_layout = QVBoxLayout()
+        self.widget.setLayout(self._widget_layout)
+
         self._frame = QFrame(parent=self.widget)
         self._frame.setFrameShape(QFrame.StyledPanel)
         self._frame.setFixedSize(250, 120)
 
         self._frame_layout = QVBoxLayout()
         self._frame_layout.setSpacing(0)
-        # self._frame_layout.setContentsMargins(0, 0, 0, 0)
         self._frame_layout.setAlignment(Qt.AlignTop)
         self._frame.setLayout(self._frame_layout)
+        self._widget_layout.addWidget(self._frame, alignment=Qt.AlignHCenter)
 
         # 1
         self._info_label = QLabel(text=self._info_text)
-        # self._info_label.setStyleSheet(
-        #     """QLabel {padding: 0px;margin: 0px; color: red; background-color: darkgreen;}"""
-        # )
         self._frame_layout.addWidget(self._info_label)
         # 2
         self._selection_display = SelectionDisplayC1()
@@ -88,7 +88,6 @@ class FolderSelector(Selector):
         return self._path
 
     def _open_directory(self):
-        # Open a dialog to select a directory
         directory = QFileDialog.getExistingDirectory(
             parent=self.widget, caption=self._dialog_caption, directory=""
         )

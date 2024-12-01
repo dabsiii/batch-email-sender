@@ -58,21 +58,12 @@ class VariableLister:
         self._init_ui()
 
     def _init_ui(self):
-        # Set minimum height for the widget
-        self.widget.setMinimumHeight(200)
-        # self.widget.setStyleSheet("background-color: pink;")
-
-        # Main layout for the widget
         self._main_layout = QVBoxLayout()
         self._main_layout.setContentsMargins(5, 5, 5, 5)
-        self._main_layout.setSpacing(0)  # Remove spacing for compactness
+        self._main_layout.setSpacing(0)
         self.widget.setLayout(self._main_layout)
 
-        # Frame to encapsulate everything
         self._frame = QFrame()
-        # self._frame.setStyleSheet(
-        #     "QFrame { border: 2px solid #ccc; border-radius: 5px; background-color: #f9f9f9; }"
-        # )
         self._frame_layout = QVBoxLayout()
         self._frame_layout.setContentsMargins(5, 5, 5, 5)
         self._frame_layout.setSpacing(0)
@@ -117,7 +108,7 @@ class VariableLister:
             button.setSizePolicy(QSizePolicy.Minimum, QSizePolicy.Minimum)
             button.setMinimumSize(80, 30)  # Set a minimum size for each button
             button.setStyleSheet(
-                "QPushButton { padding: 2px; border: 1px solid #ccc; border-radius: 3px;background-color: lightblue ; }"
+                "QPushButton { padding: 2px; border: 1px solid #ccc; border-radius: 3px;background-color: lightyellow ; }"
             )
             self._grid_layout.addWidget(button, row, col)
 

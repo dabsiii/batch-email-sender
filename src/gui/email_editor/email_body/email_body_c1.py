@@ -11,12 +11,11 @@ class EmailBodyC1(EmailBody):
     def __init__(self):
         self.widget = QTextEdit()
         self.widget.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
-        self.widget.setMinimumHeight(300)
 
         self._text_edit = self.widget
 
         self.key_filter = KeyPressFilter()
-        self._text_edit.installEventFilter(self.key_filter)  # Install the event filter
+        self._text_edit.installEventFilter(self.key_filter)  
         self.key_filter.characterTyped.connect(self._on_character_typed)
 
         self._text_edit.setAcceptRichText(True)
