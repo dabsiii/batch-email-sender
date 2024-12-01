@@ -17,29 +17,31 @@ from PyQt5.QtWidgets import (
 
 class SelectionDisplayC1:
     def __init__(self):
-        self.widget = QWidget()
-        self.widget.setMinimumSize(200, 80)
+
+        # self.widget.setMinimumSize(300, 80)
         # self.widget.setStyleSheet("background-color: #f9f9f9;")
         self._init_ui()
 
     def _init_ui(self) -> None:
-        self._stacked_widget = QStackedWidget(parent=self.widget)
+        self.widget = QWidget()
+        self._widget_layout = QVBoxLayout()
+        self.widget.setLayout(self._widget_layout)
+
+        self._stacked_widget = QStackedWidget()
+        self._widget_layout.addWidget(self._stacked_widget)
 
         # A: Selection Display
         self._display = QFrame()
-        self._display.setStyleSheet(
-            "QFrame { border: 1px solid #ccc; border-radius: 5px; background-color: #fff; }"
-        )
+        self._display.setStyleSheet("background-color: white;")
         self._display_layout = QHBoxLayout()
-        self._display_layout.setContentsMargins(5, 5, 5, 5)
+        self._display_layout.setContentsMargins(0, 0, 0, 0)
         self._display.setLayout(self._display_layout)
+        self._stacked_widget.addWidget(self._display)
 
         # A.1: Icon
         self._icon_label = QLabel()
-        self._icon_label.setFixedSize(48, 48)
-        self._icon_label.setStyleSheet(
-            "border: 1px solid #ddd; background-color: #e0e0e0; border-radius: 4px;"
-        )
+        # self._icon_label.setFixedSize(48, 48)
+        self._icon_label.setStyleSheet(" background-color: white; border-radius: 4px;")
         self._display_layout.addWidget(self._icon_label, stretch=0)
 
         # A.2: Path Display
@@ -51,10 +53,11 @@ class SelectionDisplayC1:
 
         # A.2.1: Filename
         self._file_name_line = QLineEdit()
+        self._file_name_line.setMinimumWidth(200)
         self._file_name_line.setReadOnly(True)
         self._file_name_line.setAlignment(Qt.AlignLeft)
         self._file_name_line.setStyleSheet(
-            "QLineEdit { border: none; font-size: 12px; font-weight: bold; }"
+            "QLineEdit {  border: None;font-size: 12px; font-weight: bold; }"
         )
         self._path_display_frame_layout.addWidget(self._file_name_line)
 
@@ -62,19 +65,15 @@ class SelectionDisplayC1:
         self._file_path_line = QLineEdit()
         self._file_path_line.setReadOnly(True)
         self._file_path_line.setAlignment(Qt.AlignLeft)
-        self._file_path_line.setStyleSheet(
-            "QLineEdit { border: none; font-size: 10px; color: gray; }"
-        )
         self._path_display_frame_layout.addWidget(self._file_path_line)
-
-        self._stacked_widget.addWidget(self._display)
 
         # B: No Selection Display
         self._no_selection = QWidget()
         self._no_selection_layout = QVBoxLayout()
-        self._no_selection_layout.setContentsMargins(5, 5, 5, 5)
+        self._no_selection_layout.setContentsMargins(0, 0, 0, 0)
         self._no_selection.setLayout(self._no_selection_layout)
         self._no_selection.setStyleSheet("background-color: #f1f1f1;")
+        self._stacked_widget.addWidget(self._no_selection)
 
         self._no_selection_label = QLabel("No Selection")
         self._no_selection_label.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
@@ -84,12 +83,12 @@ class SelectionDisplayC1:
             self._no_selection_label, alignment=Qt.AlignCenter
         )
 
-        self._stacked_widget.addWidget(self._no_selection)
-
     def show_selection(self, path: Path, iconpath: str = None) -> None:
         self._stacked_widget.setCurrentIndex(0)
         self._file_path_line.setText(path.as_posix())
+        self._file_path_line.setCursorPosition(0)
         self._file_name_line.setText(path.name)
+        self._file_name_line.setCursorPosition(0)
 
         if iconpath is not None:
             pixmap = QPixmap(iconpath)

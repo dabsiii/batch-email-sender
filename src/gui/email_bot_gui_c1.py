@@ -66,9 +66,6 @@ class EmailBotGuiC1(EmailBotGui):
 
         # INPUTS FRAME
         self._input_frame = QFrame()
-
-        # self._input_frame.setStyleSheet("QFrame {background-color: red;}")
-        # self._input_frame.setFixedHeight(600)
         self._input_frame_layout = QHBoxLayout()
         self._input_frame_layout.setContentsMargins(0, 0, 0, 0)
 
@@ -77,13 +74,10 @@ class EmailBotGuiC1(EmailBotGui):
 
         # A Selectors
         self._selectors_frame = QFrame()
-        self._selectors_frame.setFixedWidth(300)
-        # self._selectors_frame.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
-        # self._selectors_frame.setStyleSheet("QFrame {background-color: blue;}")
+        self._selectors_frame.setFixedWidth(350)
 
         self._selectors_frame_layout = QVBoxLayout()
         self._selectors_frame_layout.setSpacing(0)
-        # self._selectors_frame_layout.setStretch(0, 1)
         self._selectors_frame_layout.setContentsMargins(0, 0, 0, 0)
         self._selectors_frame_layout.setAlignment(Qt.AlignHCenter)
         self._selectors_frame.setLayout(self._selectors_frame_layout)
@@ -132,7 +126,7 @@ class EmailBotGuiC1(EmailBotGui):
 
         # Email Column dropdown
         self._email_column_menu = QComboBox()
-        self._email_column_menu.setMinimumWidth(100)
+        self._email_column_menu.setMinimumWidth(150)
         self._email_column_menu.setCursor(Qt.OpenHandCursor)
         self._email_column_menu.currentIndexChanged.connect(
             self._selected_email_column.publish
@@ -145,7 +139,7 @@ class EmailBotGuiC1(EmailBotGui):
 
         # Email Column dropdown
         self._attachments_column_menu = QComboBox()
-        self._attachments_column_menu.setMinimumWidth(100)
+        self._attachments_column_menu.setMinimumWidth(150)
         self._attachments_column_menu.setCursor(Qt.OpenHandCursor)
         self._attachments_column_menu.currentIndexChanged.connect(
             self._selected_attachments_column.publish
@@ -163,10 +157,12 @@ class EmailBotGuiC1(EmailBotGui):
         self._widget_layout.addWidget(self._output_frame)
 
         # E. send email button
-        self._send_email_button = QPushButton(text="send email")
+        self._send_email_button = QPushButton(text="send emails")
         self._send_email_button.setDisabled(True)
-        self._send_email_button.setStyleSheet("background-color: lightgray;")
-        self._send_email_button.setFixedSize(300, 50)
+        self._send_email_button.setStyleSheet(
+            "background-color: lightgray; border-radius: 5px"
+        )
+        self._send_email_button.setMinimumSize(350, 50)
         self._send_email_button.setCursor(Qt.PointingHandCursor)
         self._send_email_button.clicked.connect(self._send_email_clicked.publish)
         self._output_frame_layout.addWidget(
@@ -174,7 +170,9 @@ class EmailBotGuiC1(EmailBotGui):
         )
         # Logger
         self._logger = QTextEdit()
-        self._logger.setStyleSheet("background-color: gray; color: lightgreen;")
+        self._logger.setStyleSheet(
+            "background-color: rgb(50,50,50); color: lightgreen;"
+        )
         self._logger.setReadOnly(True)  # Make it read-only
         self._logger.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOn)
         self._output_frame_layout.addWidget(self._logger)
@@ -240,11 +238,15 @@ class EmailBotGuiC1(EmailBotGui):
 
     def disable_send_email(self) -> str:
         self._send_email_button.setDisabled(True)
-        self._send_email_button.setStyleSheet("background-color: lightgray;")
+        self._send_email_button.setStyleSheet(
+            "background-color: lightgray;border-radius: 5px"
+        )
 
     def enable_send_email(self) -> str:
         self._send_email_button.setEnabled(True)
-        self._send_email_button.setStyleSheet("background-color: blue;")
+        self._send_email_button.setStyleSheet(
+            "background-color: green; color: white; border-radius: 5px"
+        )
 
     def _set_email_columns_options(self, options: List[str]) -> None:
         self._email_column_menu.clear()

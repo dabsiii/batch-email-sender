@@ -55,11 +55,11 @@ class FileSelector(Selector):
         self.widget = QWidget()
         self._widget_layout = QVBoxLayout()
         self.widget.setLayout(self._widget_layout)
-        self.widget.setMinimumSize(300, 200)
 
         self._frame = QFrame()
         self._frame.setFrameShape(QFrame.StyledPanel)
-        self._frame.setFixedSize(250, 120)
+        self._frame.setFixedWidth(300)
+        # self._frame.setFixedSize(300, 120)
 
         self._frame_layout = QVBoxLayout()
         self._frame_layout.setSpacing(0)

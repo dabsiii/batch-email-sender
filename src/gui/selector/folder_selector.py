@@ -50,13 +50,12 @@ class FolderSelector(Selector):
 
     def _init_ui(self):
         self.widget = QWidget()
-        self.widget.setMinimumSize(300, 200)
         self._widget_layout = QVBoxLayout()
         self.widget.setLayout(self._widget_layout)
 
         self._frame = QFrame(parent=self.widget)
         self._frame.setFrameShape(QFrame.StyledPanel)
-        self._frame.setFixedSize(250, 120)
+        self._frame.setFixedWidth(300)
 
         self._frame_layout = QVBoxLayout()
         self._frame_layout.setSpacing(0)
