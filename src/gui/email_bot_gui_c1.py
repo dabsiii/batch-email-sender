@@ -16,6 +16,7 @@ from PyQt5.QtWidgets import (
     QWidget,
 )
 
+import src.resources_rc
 from src.event.event import Event
 from src.event.event_ import Event_
 from src.gui.email_bot_gui import EmailBotGui
@@ -47,8 +48,8 @@ class EmailBotGuiC1(EmailBotGui):
     def _init_gui(self) -> None:
         self._widget = QWidget()
         self._widget.setWindowTitle("PS Batch Email Sender V1.0.1")
-        logo_path = Path("assets\\app-logo.ico").resolve()
-        self._widget.setWindowIcon(QIcon(logo_path.as_posix()))
+        logo_path = ":/images/icons/app-logo.ico"
+        self._widget.setWindowIcon(QIcon(logo_path))
         self._widget.setMinimumSize(1000, 400)
         self._widget_layout = QVBoxLayout()
         self._widget.setLayout(self._widget_layout)
@@ -81,7 +82,7 @@ class EmailBotGuiC1(EmailBotGui):
         # A.1 Credentials
         self._credential_selector = FileSelector(
             info_text="Import Sender Credentials (.json file)",
-            icon_path=Path("assets\\json-icon.png").resolve(),
+            icon_path=":/images/icons/json-icon.png",
             filter="JSON Files (*.json);;All Files (*)",
         )
         self._credential_selector.selected
@@ -92,7 +93,7 @@ class EmailBotGuiC1(EmailBotGui):
         # A.2 Data
         self._data_selector = FileSelector(
             info_text="Select Data File (.xlsx file)",
-            icon_path=Path("assets\\xlsx-icon.png").resolve(),
+            icon_path=":/images/icons/xlsx-icon.png",
             filter="Excel Files (*.xls *.xlsx);;All Files (*)",
         )
         self._selectors_frame_layout.addWidget(
@@ -102,7 +103,7 @@ class EmailBotGuiC1(EmailBotGui):
         # 3 Attachment Folder
         self._attachment_folder_selector = FolderSelector(
             info_text="Select Attachments Folder",
-            icon_path=Path("assets\\folder-icon.jpg").resolve(),
+            icon_path=":/images/icons/folder-icon.jpg",
         )
         self._selectors_frame_layout.addWidget(
             self._attachment_folder_selector.widget,

@@ -16,7 +16,7 @@ from src.event.event_ import Event_
 from src.gui.selector.selection_display.selection_display_c1 import SelectionDisplayC1
 from src.gui.selector.selector import Selector
 
-
+import src.resources_rc
 class FileSelector(Selector):
     """
     1. INFO TEX

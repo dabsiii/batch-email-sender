@@ -86,13 +86,13 @@ class SelectionDisplayC1:
 
         self._stacked_widget.addWidget(self._no_selection)
 
-    def show_selection(self, path: Path, iconpath: Path = None) -> None:
+    def show_selection(self, path: Path, iconpath: str = None) -> None:
         self._stacked_widget.setCurrentIndex(0)
         self._file_path_line.setText(path.as_posix())
         self._file_name_line.setText(path.name)
 
         if iconpath is not None:
-            pixmap = QPixmap(iconpath.as_posix())
+            pixmap = QPixmap(iconpath)
             self._icon_label.setPixmap(
                 pixmap.scaled(48, 48, Qt.KeepAspectRatio, Qt.SmoothTransformation)
             )
