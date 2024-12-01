@@ -81,8 +81,8 @@ class EmailBotApp:
             email_bot.connect()
 
             for record in data.get_records():
-                email = record["EMAIL"]
-                file = record["FILE"]
+                email = record[self._gui.get_email_column()]
+                file = record[self._gui.get_attachments_column()]
 
                 attachment = f"{attachment_folder_path}\\{file}"
                 raw_html_body = self._gui.get_email_body_html()
