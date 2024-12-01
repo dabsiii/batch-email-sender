@@ -128,6 +128,7 @@ class EmailBotGuiC1(EmailBotGui):
         # Email Column dropdown
         self._email_column_menu = QComboBox()
         self._email_column_menu.setMinimumWidth(200)
+        self._email_column_menu.setCursor(Qt.OpenHandCursor)
         self._email_column_menu.currentIndexChanged.connect(
             self._selected_email_column.publish
         )
@@ -139,6 +140,7 @@ class EmailBotGuiC1(EmailBotGui):
         # Email Column dropdown
         self._attachments_column_menu = QComboBox()
         self._attachments_column_menu.setMinimumWidth(200)
+        self._attachments_column_menu.setCursor(Qt.OpenHandCursor)
         self._attachments_column_menu.currentIndexChanged.connect(
             self._selected_attachments_column.publish
         )

@@ -56,6 +56,9 @@ class EmailBotApp:
             self._data = Data(data_file_path)
             self._variables = self._data.get_columns()
             self._gui.update_variables(self._variables)
+        if data_file_path is None:
+            self._gui.update_variables([])
+
         self._check_ready()
 
     def _read_attachment_folder(self, data) -> None:
