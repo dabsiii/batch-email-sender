@@ -8,6 +8,11 @@ from src.model.credentials import Credentials
 from src.model.data import Data
 from src.model.email_bot import EmailBot
 
+INFO_LOG_COLOR = (250, 255, 250)
+WARNING_LOG_COLOR = (200, 100, 50)
+SUCCESS_LOG_COLOR = (20, 255, 100)
+TASK_LOG_COLOR = (20, 100, 255)
+
 
 class EmailBotApp:
     def __init__(self, version: str = ""):
@@ -117,7 +122,7 @@ class EmailBotApp:
                     is_html=True,
                     attachments=[attachment],  # Update paths
                 )
-            self._gui.log("Task Finished ...")
+            self._log_finished()
         finally:
             email_bot.disconnect()
 
@@ -166,13 +171,13 @@ class EmailBotApp:
         recipient = data["recipient"]
         attachment = data["attachment"]
         message = f"Email succesfuly sent to {recipient} [attachment: {attachment}]"
-        self._gui.log(message)
+        self._gui.log(message, color=SUCCESS_LOG_COLOR)
 
-    def _log_finished(self, data):
-        self._gui.log("Task Finished ...")
+    def _log_finished(self) -> None:
+        self._gui.log("Task Finished ...", color=TASK_LOG_COLOR)
 
     def _log_sending_email(self) -> None:
-        self._gui.log("Sending emails, please wait ...")
+        self._gui.log("Sending emails, please wait ...", color=TASK_LOG_COLOR)
 
     def _log_sender_info(self, username: str) -> None:
         self._gui.log(f"Sender Username: {username}")

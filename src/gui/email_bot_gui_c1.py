@@ -1,9 +1,9 @@
 import sys
 from pathlib import Path
-from typing import List
+from typing import List, Tuple
 
 from PyQt5.QtCore import Qt
-from PyQt5.QtGui import QIcon, QTextCursor
+from PyQt5.QtGui import QColor, QIcon, QTextCursor
 from PyQt5.QtWidgets import (
     QApplication,
     QComboBox,
@@ -264,17 +264,9 @@ class EmailBotGuiC1(EmailBotGui):
     def get_attachments_column(self) -> str:
         return self._attachments_column_menu.currentText()
 
-    def log(self, message: str) -> None:
+    def log(self, message: str, color: Tuple[int] = (255, 255, 255)) -> None:
+        r, g, b = color
+        qcolor = QColor(r, g, b)
+        self._logger.setTextColor(qcolor)  # Set the text color
         self._logger.append(message)
         self._logger.moveCursor(QTextCursor.End)
-
-    # def _on_email_selection_column_change(self) -> None:
-    #     # print("email column selection changed")
-    #     # print(self._email_column_menu.currentIndex())
-    #     empty_options = self._email_column_menu.count() == 0
-    #     no_options_selected = self._email_column_menu.currentIndex() == -1
-    #     if (not empty_options) and (not no_options_selected):
-
-    #         print(
-    #             f"user selected email column {self._email_column_menu.count()} {self._email_column_menu.currentIndex()}"
-    #         )
