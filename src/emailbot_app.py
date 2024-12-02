@@ -32,6 +32,8 @@ class EmailBotApp:
         self._data: Data = None
         self._attachment_folder_path: Path = None
         self._email_bot: EmailBot = None
+        self._user_selected_email_column = False
+        self._user_selected_attachments_column = False
 
         self._gui = EmailBotGuiC1(version)
         # EVENTS HANDLING
@@ -41,9 +43,11 @@ class EmailBotApp:
         self._gui.send_email_clicked.subscribe(
             lambda e: self._email_sending_thread.start()
         )
-        self._gui.selected_email_column.subscribe(lambda e: self._check_valid_emails())
+        self._gui.selected_email_column.subscribe(
+            lambda e: self._on_email_column_selection()
+        )
         self._gui.selected_attachments_column.subscribe(
-            lambda e: self._check_attachments()
+            lambda e: self._on_attachments_column_selection()
         )
 
         self._ready.subscribe(lambda e: self._gui.enable_send_email())
@@ -68,6 +72,9 @@ class EmailBotApp:
 
     def _read_data(self, data) -> None:
         data_file_path = self._gui.get_data_path()
+        self._user_selected_email_column = False
+        self._user_selected_attachments_column = False
+
         if data_file_path is not None:
             self._data = Data(data_file_path)
             self._variables = self._data.get_columns()
@@ -75,8 +82,10 @@ class EmailBotApp:
             self._log_number_of_records(self._data.get_number_of_records())
         if data_file_path is None:
             self._gui.update_variables([])
+            self._user_selected_email_column = False
+            self._user_selected_attachments_column = False
 
-        self._check_ready()
+            self._not_ready.publish(None)
 
     def _read_attachment_folder(self, data) -> None:
         attachment_folder_path = self._gui.get_attachment_folder_path()
@@ -138,10 +147,17 @@ class EmailBotApp:
 
     def _check_ready(self):
         credentials = self._gui.get_credentials_path() is not None
-        data = self._gui.get_data_path() is not None
         attachment_folder = self._gui.get_attachment_folder_path() is not None
+        data = self._gui.get_data_path()
+        valid_emails = False
+        valid_attachments = False
+        if data is not None:
+            if self._user_selected_email_column:
+                valid_emails = self._check_valid_emails()
+            if self._user_selected_attachments_column:
+                valid_attachments = self._check_attachments()
 
-        if credentials and data and attachment_folder:
+        if credentials and valid_emails and valid_attachments and attachment_folder:
             self._ready.publish(True)
         else:
             self._not_ready.publish(True)
@@ -151,21 +167,33 @@ class EmailBotApp:
         for record in self._data.get_records():
             email = record[email_column]
             if not is_valid_email(email):
-                self._invalid_email_found_in_email_column.publish
-                return
-            else:
-                pass
+                self._gui.log(
+                    "The selected email column contains invalid emails",
+                    color=WARNING_LOG_COLOR,
+                )
+                return False
+        return True
 
     def _check_attachments(self):
         attachments_column = self._gui.get_attachments_column()
         attachment_dir = self._gui.get_attachment_folder_path()
         if attachment_dir is not None:
             for record in self._data.get_records():
-                attachment = record[attachments_column]
+                attachment = str(record[attachments_column])
                 if not file_is_in_directory(attachment_dir, attachment):
                     self._file_not_found_in_attachment_folder.publish
-                else:
-                    print(attachment)
+                    self._gui.log(
+                        "Some files on the selected attachments columns not found on the attachments folder",
+                        color=WARNING_LOG_COLOR,
+                    )
+                    return False
+        else:
+            self._gui.log(
+                "No selected Attachments Folder",
+                color=WARNING_LOG_COLOR,
+            )
+
+        return True
 
     def _log_email_sent(self, data) -> None:
         recipient = data["recipient"]
@@ -174,7 +202,7 @@ class EmailBotApp:
         self._gui.log(message, color=SUCCESS_LOG_COLOR)
 
     def _log_finished(self) -> None:
-        self._gui.log("Task Finished ...", color=TASK_LOG_COLOR)
+        self._gui.log("Task Finished.", color=TASK_LOG_COLOR)
 
     def _log_sending_email(self) -> None:
         self._gui.log("Sending emails, please wait ...", color=TASK_LOG_COLOR)
@@ -187,8 +215,16 @@ class EmailBotApp:
         self._gui.log(message)
 
     def _log_number_of_files(self, number_of_files: int) -> None:
-        message = f"{number_of_files} files found in attachments folder (okay lang sobra wag lang kulang)"
+        message = f"{number_of_files} files found in attachments folder"
         self._gui.log(message)
+
+    def _on_email_column_selection(self) -> None:
+        self._user_selected_email_column = True
+        self._check_ready()
+
+    def _on_attachments_column_selection(self) -> None:
+        self._user_selected_attachments_column = True
+        self._check_ready()
 
 
 def count_files_in_directory(directory_path: str) -> int:
