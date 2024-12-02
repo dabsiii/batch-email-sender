@@ -14,20 +14,31 @@ class EmailBotApp:
         self._email_sending_thread = threading.Thread(
             target=lambda: self._send_batch_emails(0)
         )
+        # EVENTS
+        self._ready = Event_()
+        self._not_ready = Event_()
+        self._invalid_email_found_in_email_column = Event_()
+        self._file_not_found_in_attachment_folder = Event_()
+
+        # ELEMENTS
 
         self._variables: List = None
         self._credentials: Credentials = None
         self._data: Data = None
         self._attachment_folder_path: Path = None
         self._email_bot: EmailBot = None
-        self._ready = Event_()
-        self._not_ready = Event_()
+
         self._gui = EmailBotGuiC1(version)
+        # EVENTS HANDLING
         self._gui.selected_credentials.subscribe(self._read_credentials)
         self._gui.selected_data.subscribe(self._read_data)
         self._gui.selected_folder.subscribe(self._read_attachment_folder)
         self._gui.send_email_clicked.subscribe(
             lambda e: self._email_sending_thread.start()
+        )
+        self._gui.selected_email_column.subscribe(lambda e: self._check_valid_emails())
+        self._gui.selected_attachments_column.subscribe(
+            lambda e: self._check_attachments()
         )
 
         self._ready.subscribe(lambda e: self._gui.enable_send_email())
@@ -56,6 +67,7 @@ class EmailBotApp:
             self._data = Data(data_file_path)
             self._variables = self._data.get_columns()
             self._gui.update_variables(self._variables)
+            self._log_number_of_records(self._data.get_number_of_records())
         if data_file_path is None:
             self._gui.update_variables([])
 
@@ -65,6 +77,8 @@ class EmailBotApp:
         attachment_folder_path = self._gui.get_attachment_folder_path()
 
         if attachment_folder_path is not None:
+            number_of_files = count_files_in_directory(attachment_folder_path)
+            self._log_number_of_files(number_of_files)
             self._attachment_folder_path = attachment_folder_path
 
         self._check_ready()
@@ -79,13 +93,15 @@ class EmailBotApp:
         password = credentials.get_password()
         email_bot = EmailBot(username, password)
         email_bot.email_sent.subscribe(self._log_email_sent)
+        email_column = self._gui.get_email_column()
+        attachments_column = self._gui.get_attachments_column()
 
         try:
             email_bot.connect()
 
             for record in data.get_records():
-                email = record[self._gui.get_email_column()]
-                file = record[self._gui.get_attachments_column()]
+                email = record[email_column]
+                file = record[attachments_column]
 
                 attachment = f"{attachment_folder_path}\\{file}"
                 raw_html_body = self._gui.get_email_body_html()
@@ -125,6 +141,27 @@ class EmailBotApp:
         else:
             self._not_ready.publish(True)
 
+    def _check_valid_emails(self):
+        email_column = self._gui.get_email_column()
+        for record in self._data.get_records():
+            email = record[email_column]
+            if not is_valid_email(email):
+                self._invalid_email_found_in_email_column.publish
+                return
+            else:
+                pass
+
+    def _check_attachments(self):
+        attachments_column = self._gui.get_attachments_column()
+        attachment_dir = self._gui.get_attachment_folder_path()
+        if attachment_dir is not None:
+            for record in self._data.get_records():
+                attachment = record[attachments_column]
+                if not file_is_in_directory(attachment_dir, attachment):
+                    self._file_not_found_in_attachment_folder.publish
+                else:
+                    print(attachment)
+
     def _log_email_sent(self, data) -> None:
         recipient = data["recipient"]
         attachment = data["attachment"]
@@ -139,3 +176,34 @@ class EmailBotApp:
 
     def _log_sender_info(self, username: str) -> None:
         self._gui.log(f"Sender Username: {username}")
+
+    def _log_number_of_records(self, number_of_records: int) -> None:
+        message = f"{number_of_records} records found from data file"
+        self._gui.log(message)
+
+    def _log_number_of_files(self, number_of_files: int) -> None:
+        message = f"{number_of_files} files found in attachments folder (okay lang sobra wag lang kulang)"
+        self._gui.log(message)
+
+
+def count_files_in_directory(directory_path: str) -> int:
+
+    directory = Path(directory_path)
+    if not directory.is_dir():
+        raise ValueError(f"The path '{directory_path}' is not a valid directory.")
+
+    return sum(1 for f in directory.iterdir() if f.is_file())
+
+
+import re
+
+
+def is_valid_email(email: str) -> bool:
+    email = str(email)
+    email_regex = r"^[^@]+@[^@]+\.[^@]+$"
+    return bool(re.match(email_regex, email))
+
+
+def file_is_in_directory(directory_path: str, filename: str) -> bool:
+    directory = Path(directory_path)
+    return directory.joinpath(filename).is_file()

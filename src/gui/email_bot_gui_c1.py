@@ -129,9 +129,8 @@ class EmailBotGuiC1(EmailBotGui):
         self._email_column_menu = QComboBox()
         self._email_column_menu.setMinimumWidth(150)
         self._email_column_menu.setCursor(Qt.OpenHandCursor)
-        self._email_column_menu.currentIndexChanged.connect(
-            self._selected_email_column.publish
-        )
+        self._email_column_menu.setCurrentIndex(-1)
+        self._email_column_menu.activated.connect(self._selected_email_column.publish)
         dropdown_layout.addRow("Email Address Column:", self._email_column_menu)
         self._selectors_frame_layout.addWidget(
             self._dropdowns_container,
@@ -142,7 +141,7 @@ class EmailBotGuiC1(EmailBotGui):
         self._attachments_column_menu = QComboBox()
         self._attachments_column_menu.setMinimumWidth(150)
         self._attachments_column_menu.setCursor(Qt.OpenHandCursor)
-        self._attachments_column_menu.currentIndexChanged.connect(
+        self._attachments_column_menu.activated.connect(
             self._selected_attachments_column.publish
         )
         dropdown_layout.addRow("Attachments Column:", self._attachments_column_menu)
@@ -268,3 +267,14 @@ class EmailBotGuiC1(EmailBotGui):
     def log(self, message: str) -> None:
         self._logger.append(message)
         self._logger.moveCursor(QTextCursor.End)
+
+    # def _on_email_selection_column_change(self) -> None:
+    #     # print("email column selection changed")
+    #     # print(self._email_column_menu.currentIndex())
+    #     empty_options = self._email_column_menu.count() == 0
+    #     no_options_selected = self._email_column_menu.currentIndex() == -1
+    #     if (not empty_options) and (not no_options_selected):
+
+    #         print(
+    #             f"user selected email column {self._email_column_menu.count()} {self._email_column_menu.currentIndex()}"
+    #         )

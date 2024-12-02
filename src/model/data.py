@@ -12,3 +12,6 @@ class Data:
 
     def get_records(self) -> List[Dict]:
         return self._dataframe.to_dict(orient="records")
+
+    def get_number_of_records(self) -> int:
+        return self._dataframe.shape[0]
